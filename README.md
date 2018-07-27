@@ -1,10 +1,12 @@
 # DebugJSSE
 
-[ ![Download](https://api.bintray.com/packages/tersesystems/maven/jssedebug/images/download.svg) ](https://bintray.com/tersesystems/maven/jssedebug/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/tersesystems/maven/debugjsse/images/download.svg) ](https://bintray.com/tersesystems/maven/debugjsse/_latestVersion)
 
 This is a JSSE provider that provides logging for entrance and exit of the trust manager, delegating to the original `KeyManager` and `TrustManager`.
 
 This works on all JSSE implementations, but is transparent, and logs before and after every call.
+
+More info in the [blog post](https://tersesystems.com/blog/2018/07/27/debug-java-tls-ssl-provider/).
 
 ## Installation
 
