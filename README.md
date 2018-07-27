@@ -1,4 +1,6 @@
-# Proxy JSSE Provider
+# DebugJSSE
+
+[ ![Download](https://api.bintray.com/packages/tersesystems/maven/jssedebug/images/download.svg) ](https://bintray.com/tersesystems/maven/jssedebug/_latestVersion)
 
 This is a JSSE provider that provides logging for entrance and exit of the trust manager, delegating to the original `KeyManager` and `TrustManager`.
 
@@ -6,54 +8,15 @@ This works on all JSSE implementations, but is transparent, and logs before and 
 
 ## Installation
 
-The artifacts are on Bintray JCenter:
-
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<settings xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd'
-          xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
-    
-    <profiles>
-        <profile>
-            <repositories>
-                <repository>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                    <id>bintray-tersesystems-debugjsseprovider</id>
-                    <name>bintray</name>
-                    <url>https://dl.bintray.com/tersesystems/debugjsseprovider</url>
-                </repository>
-            </repositories>
-            <pluginRepositories>
-                <pluginRepository>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                    <id>bintray-tersesystems-debugjsseprovider</id>
-                    <name>bintray-plugins</name>
-                    <url>https://dl.bintray.com/tersesystems/debugjsseprovider</url>
-                </pluginRepository>
-            </pluginRepositories>
-            <id>bintray</id>
-        </profile>
-    </profiles>
-    <activeProfiles>
-        <activeProfile>bintray</activeProfile>
-    </activeProfiles>
-</settings>
-```
-
-And the artifact is listed as:
+Packages are hosted on Bintray:
 
 ```xml
 <dependency>
     <groupId>com.tersesystems.debugjsse</groupId>
-    <artifactId>debugjsseprovider</artifactId>
+    <artifactId>debugjsse</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
-
 
 ## Running
 
@@ -159,4 +122,3 @@ Produces the output:
 trustManager = []
 ```
 
-##

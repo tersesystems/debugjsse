@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tersesystems.debugjsse</groupId>
-    <artifactId>debugjsseprovider</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <artifactId>debugjsse</artifactId>
+    <version>0.1.0</version>
     <packaging>pom</packaging>
-    <name>DebugJSSEProvider</name>
+    <name>DebugJSSE</name>
     <description>Debug TrustManager and KeyManager</description>
     <url>https://tersesystems.com/</url>
 
@@ -32,19 +32,24 @@
         </developer>
     </developers>
 
-    <scm>
-        <connection>scm:git:git@github.com:wsargent/debugjsseprovider.git</connection>
-        <developerConnection>scm:git:git@github.com:wsargent/debugjsseprovider.git</developerConnection>
-        <url>git@github.com:wsargent/debugjsseprovider.git</url>
-    </scm>
-
     <distributionManagement>
         <repository>
-            <id>bintray-tersesystems-debugjsseprovider</id>
-            <name>tersesystems-debugjsseprovider</name>
-            <url>https://api.bintray.com/maven/tersesystems/debugjsseprovider/debugjsseprovider/;publish=1</url>
+            <!-- MUST match what you have in .m2/settings.xml -->
+            <id>bintray-tersesystems-maven</id>
+            <name>tersesystems-maven</name>
+            <!--
+              Repo: maven (on bintray, create a repository of maven type)
+              Package: jssedebug (on bintray, create a package under the repo section)
+            -->
+            <url>https://api.bintray.com/maven/tersesystems/maven/jssedebug/;publish=1</url>
         </repository>
     </distributionManagement>
+
+    <scm>
+        <connection>scm:git:git@github.com:tersesystems/debugjsse.git</connection>
+        <developerConnection>scm:git:git@github.com:tersesystems/debugjsse.git</developerConnection>
+        <url>git@github.com:tersesystems/debugjsse.git</url>
+    </scm>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
