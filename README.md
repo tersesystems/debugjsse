@@ -122,3 +122,8 @@ Produces the output:
 trustManager = []
 ```
 
+## Releasing
+
+```bash
+mvn clean compile package deploy
+```
