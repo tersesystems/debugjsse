@@ -12,12 +12,21 @@ More info in the [blog post](https://tersesystems.com/blog/2018/07/27/debug-java
 
 Packages are hosted on Bintray:
 
+### Maven
+
 ```xml
 <dependency>
     <groupId>com.tersesystems.debugjsse</groupId>
     <artifactId>debugjsse</artifactId>
     <version>0.1.2</version><!-- see badge for latest version -->
 </dependency>
+```
+
+### sbt
+
+```
+resolvers += Resolvers.bintray("tersesystems", "maven")
+libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.1.2"
 ```
 
 ## Running
