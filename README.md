@@ -25,7 +25,7 @@ Packages are hosted on Bintray:
 ### sbt
 
 ```
-resolvers += Resolvers.bintray("tersesystems", "maven")
+resolvers += Resolver.bintrayRepo("tersesystems", "maven")
 libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.1.2"
 ```
 
