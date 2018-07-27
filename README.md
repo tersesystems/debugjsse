@@ -138,3 +138,8 @@ trustManager = []
 ```bash
 mvn clean compile package deploy
 ```
+
+## Further Reading
+
+* https://github.com/cloudfoundry/java-buildpack-security-provider/tree/master/src/main/java/org/cloudfoundry/security
+* https://github.com/scholzj/AliasKeyManager
