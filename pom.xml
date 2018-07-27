@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tersesystems.debugjsse</groupId>
     <artifactId>debugjsseprovider</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <version>0.1.0</version>
+    <packaging>pom</packaging>
     <name>DebugJSSEProvider</name>
     <description>Debug TrustManager and KeyManager</description>
     <url>https://tersesystems.com/</url>
@@ -51,13 +51,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-ext -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-ext</artifactId>
             <version>1.7.25</version>
             <scope>test</scope>
         </dependency>

@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.security.Principal;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 
 public class DebugX509ExtendedKeyManager extends X509ExtendedKeyManager {
 
@@ -20,79 +19,121 @@ public class DebugX509ExtendedKeyManager extends X509ExtendedKeyManager {
 
     @Override
     public String chooseEngineClientAlias(String[] keyTypes, Principal[] issuers, SSLEngine engine) {
-        final String msg = String.format("chooseEngineClientAlias: keyTypes = %s, issuers = %s, engine = %s",
-                Arrays.toString(keyTypes), Arrays.toString(issuers), engine);
-        debug.enter(msg);
-        String result = delegate.chooseEngineClientAlias(keyTypes, issuers, engine);
-        debug.exit(msg, result);
-        return result;
+        final String method = "chooseEngineClientAlias";
+        final Object[] args = new Object[] { keyTypes, issuers, engine };
+
+        debug.enter(delegate, method, args);
+        try {
+            String result = delegate.chooseEngineClientAlias(keyTypes, issuers, engine);
+            return debug.exit(delegate, method, result, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
+        }
     }
 
     @Override
     public String chooseEngineServerAlias(String keyType, Principal[] issuers, SSLEngine engine) {
-        final String msg = String.format("chooseEngineServerAlias: keyType = %s, issuers = %s, engine = %s",
-                keyType, Arrays.toString(issuers), engine);
-        debug.enter(msg);
-        String result = delegate.chooseEngineServerAlias(keyType, issuers, engine);
-        debug.exit(msg, result);
-        return result;
+        final String method = "chooseEngineServerAlias";
+        final Object[] args = new Object[] { keyType, issuers, engine };
+
+        debug.enter(delegate, method, args);
+        try {
+            String result = delegate.chooseEngineServerAlias(keyType, issuers, engine);
+            return debug.exit(delegate, method, result, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
+        }
     }
 
     @Override
     public String[] getClientAliases(String keyType, Principal[] issuers) {
-        final String msg = String.format("getClientAliases: keyType = %s, issuers = %s",
-                keyType, Arrays.toString(issuers));
-        debug.enter(msg);
-        String[] result = delegate.getClientAliases(keyType, issuers);
-        debug.exit(msg, result);
-        return result;
+        final String method = "getClientAliases";
+        final Object[] args = new Object[] {  keyType, issuers };
+
+        debug.enter(delegate, method, args);
+        try {
+            String[] result = delegate.getClientAliases(keyType, issuers);
+            return debug.exit(delegate, method, result, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
+        }
     }
 
     @Override
     public String chooseClientAlias(String[] keyTypes, Principal[] issuers, Socket socket) {
-        final String msg = String.format("chooseClientAlias: keyTypes = %s, issuers = %s, socket = %s",
-                Arrays.toString(keyTypes), Arrays.toString(issuers), socket);
-        debug.enter(msg);
-        String result = delegate.chooseClientAlias(keyTypes, issuers, socket);
-        debug.exit(msg, result);
-        return result;
+        final String method = "chooseClientAlias";
+        final Object[] args = new Object[] { keyTypes, issuers };
+
+        debug.enter(delegate, method, args);
+        try {
+            String result = delegate.chooseClientAlias(keyTypes, issuers, socket);
+            return debug.exit(delegate, method, result, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
+        }
     }
 
     @Override
     public String[] getServerAliases(String keyType, Principal[] issuers) {
-        final String msg = String.format("chooseClientAlias: keyType = %s, issuers = %s",
-                keyType, Arrays.toString(issuers));
-        debug.enter(msg);
-        String[] result = delegate.getServerAliases(keyType, issuers);
-        debug.exit(msg, result);
-        return result;
+        final String method = "getServerAliases";
+        final Object[] args = new Object[] { keyType, issuers };
+
+        debug.enter(delegate, method, args);
+        try {
+            String[] result = delegate.getServerAliases(keyType, issuers);
+            return debug.exit(delegate, method, result, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
+        }
     }
 
     @Override
     public String chooseServerAlias(String alias, Principal[] issuers, Socket socket) {
-        final String msg = String.format("chooseServerAlias: alias = %s, issuers = %s, socket = %s",
-                alias, Arrays.toString(issuers), socket);
-        debug.enter(msg);
-        String result = delegate.chooseServerAlias(alias, issuers, socket);
-        debug.exit(msg, result);
-        return result;
+        final String method = "chooseServerAlias";
+        final Object[] args = new Object[] { alias, issuers, socket };
+
+        debug.enter(delegate, method, args);
+        try {
+            String result = delegate.chooseServerAlias(alias, issuers, socket);
+            return debug.exit(delegate, method, result, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
+        }
     }
 
     @Override
     public X509Certificate[] getCertificateChain(String alias) {
-        final String msg = String.format("getCertificateChain: alias = %s", alias);
-        debug.enter(msg);
-        X509Certificate[] result = delegate.getCertificateChain(alias);
-        debug.exit(msg, result);
-        return result;
+        final String method = "getCertificateChain";
+        final Object[] args = new Object[] { alias };
+
+        debug.enter(delegate, method, args);
+        try {
+            X509Certificate[] result = delegate.getCertificateChain(alias);
+            return debug.exit(delegate, method, result, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
+        }
     }
 
     @Override
     public PrivateKey getPrivateKey(String alias) {
-        final String msg = String.format("getPrivateKey: alias = %s", alias);
-        debug.enter(msg);
-        PrivateKey result = delegate.getPrivateKey(alias);
-        debug.exit(msg, result);
-        return result;
+        final String method = "getPrivateKey";
+        final Object[] args = new Object[] { alias };
+
+        debug.enter(delegate, method, args);
+        try {
+            PrivateKey result = delegate.getPrivateKey(alias);
+            return debug.exit(delegate, method, result, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
+        }
     }
 }

@@ -5,7 +5,6 @@ import javax.net.ssl.X509ExtendedTrustManager;
 import java.net.Socket;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 
 public class DebugX509ExtendedTrustManager extends X509ExtendedTrustManager {
 
@@ -19,88 +18,106 @@ public class DebugX509ExtendedTrustManager extends X509ExtendedTrustManager {
 
     @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        final String msg = String.format("checkClientTrusted: chain = %s, authType = %s",
-                Arrays.toString(chain), authType);
-        debug.enter(msg);
+        String method = "checkClientTrusted";
+        Object[] args = new Object[] { chain, authType };
+
+        debug.enter(delegate, method, args);
         try {
             delegate.checkClientTrusted(chain, authType);
-        } catch (CertificateException e) {
-            debug.exception(msg, e);
+            debug.exit(delegate, method, null, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
             throw e;
         }
     }
 
     @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket) throws CertificateException {
-        final String msg = String.format("checkClientTrusted: chain = %s, authType = %s, socket = %s",
-                Arrays.toString(chain), authType, socket);
-        debug.enter(msg);
+        String method = "checkClientTrusted";
+        Object[] args = new Object[] { chain, authType, socket };
+
+        debug.enter(delegate, method, args);
         try {
             delegate.checkClientTrusted(chain, authType, socket);
-        } catch (CertificateException e) {
-            debug.exception(msg, e);
+            debug.exit(delegate, method, null, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
             throw e;
         }
     }
 
     @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine sslEngine) throws CertificateException {
-        final String msg = String.format("checkClientTrusted: chain = %s, authType = %s, sslEngine = %s",
-                Arrays.toString(chain), authType, sslEngine);
-        debug.enter(msg);
+        String method = "checkClientTrusted";
+        Object[] args = new Object[] { chain, authType, sslEngine };
+
+        debug.enter(delegate, method, args);
         try {
             delegate.checkClientTrusted(chain, authType, sslEngine);
-        } catch (CertificateException e) {
-            debug.exception(msg, e);
+            debug.exit(delegate, method, null, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
             throw e;
         }
     }
 
     @Override
     public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        final String msg = String.format("checkServerTrusted: chain = %s, authType = %s",
-                Arrays.toString(chain), authType);
-        debug.enter(msg);
+        String method = "checkServerTrusted";
+        Object[] args = new Object[] { chain, authType };
+
+        debug.enter(delegate, method, args);
         try {
             delegate.checkServerTrusted(chain, authType);
-        } catch (CertificateException e) {
-            debug.exception(msg, e);
+            debug.exit(delegate, method, null, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
             throw e;
         }
     }
 
     @Override
     public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket) throws CertificateException {
-        final String msg = String.format("checkServerTrusted: chain = %s, authType = %s, socket = %s",
-                Arrays.toString(chain), authType, socket);
-        debug.enter(msg);
+        String method = "checkServerTrusted";
+        Object[] args = new Object[] { chain, authType, socket };
+
+        debug.enter(delegate, method, args);
         try {
             delegate.checkServerTrusted(chain, authType, socket);
-        } catch (CertificateException e) {
-            debug.exception(msg, e);
+            debug.exit(delegate, method, null, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
             throw e;
         }
     }
 
     @Override
     public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine sslEngine) throws CertificateException {
-        final String msg = String.format("checkServerTrusted: chain = %s, authType = %s, sslEngine = %s",
-                Arrays.toString(chain), authType, sslEngine);
-        debug.enter(msg);
+        String method = "checkServerTrusted";
+        Object[] args = new Object[] { chain, authType, sslEngine };
+
+        debug.enter(delegate, method, args);
         try {
             delegate.checkServerTrusted(chain, authType, sslEngine);
-        } catch (CertificateException e) {
-            debug.exception(msg, e);
+            debug.exit(delegate, method, null, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
             throw e;
         }
     }
 
     @Override
     public X509Certificate[] getAcceptedIssuers() {
-        final String msg = "getAcceptedIssuers";
-        debug.enter(msg);
-        X509Certificate[] result = delegate.getAcceptedIssuers();
-        debug.exit(msg, result);
-        return result;
+        final String method = "getAcceptedIssuers";
+        Object[] args = new Object[] { };
+
+        debug.enter(delegate, method, args);
+        try {
+            X509Certificate[] result = delegate.getAcceptedIssuers();
+            return debug.exit(delegate, method, result, args);
+        } catch (RuntimeException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
+        }
     }
 }
