@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tersesystems.debugjsse</groupId>
     <artifactId>debugjsse</artifactId>
-    <version>0.1.0</version>
-    <packaging>pom</packaging>
+    <version>0.1.2</version>
+    <packaging>jar</packaging>
     <name>DebugJSSE</name>
     <description>Debug TrustManager and KeyManager</description>
     <url>https://tersesystems.com/</url>
@@ -41,7 +41,7 @@
               Repo: maven (on bintray, create a repository of maven type)
               Package: jssedebug (on bintray, create a package under the repo section)
             -->
-            <url>https://api.bintray.com/maven/tersesystems/maven/jssedebug/;publish=1</url>
+            <url>https://api.bintray.com/maven/tersesystems/maven/debugjsse/;publish=1</url>
         </repository>
     </distributionManagement>
 

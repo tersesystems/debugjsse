@@ -16,7 +16,7 @@ Packages are hosted on Bintray:
 <dependency>
     <groupId>com.tersesystems.debugjsse</groupId>
     <artifactId>debugjsse</artifactId>
-    <version>0.1.0-SNAPSHOT</version><!-- see badge for latest version -->
+    <version>0.1.2</version><!-- see badge for latest version -->
 </dependency>
 ```
 
