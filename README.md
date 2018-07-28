@@ -156,8 +156,11 @@ trustManager = []
 
 ## Releasing
 
+Uses [Maven Release Plugin](http://maven.apache.org/maven-release/maven-release-plugin/plugin-info.html):
+
 ```bash
-mvn -P release clean compile package deploy
+mvn release:prepare
+mvn release:perform
 ```
 
 ## Further Reading
