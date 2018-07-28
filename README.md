@@ -48,7 +48,7 @@ Security.addProvider(provider);
 provider.setAsDefault();
 ```
 
-For convenience, you can call the `enable` method:
+For convenience, you can call the `enable` method which does the same as the above:
 
 ```java
 DebugJSSEProvider provider = DebugJSSEProvider.enable();
