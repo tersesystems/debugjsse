@@ -40,7 +40,49 @@ libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.2.0"
 
 ## Running
 
-To set the provider, call `Security.addProvider` and then call setAsDefault().
+To set the provider, call `Security.addProvider` and then call `setAsDefault()`.
+
+```java
+DebugJSSEProvider provider = new DebugJSSEProvider();
+Security.addProvider(provider);
+provider.setAsDefault();
+```
+
+For convenience, you can call the `enable` method:
+
+```java
+DebugJSSEProvider provider = DebugJSSEProvider.enable();
+```
+
+You can change the `Debug` instance by calling `setDebug`:
+
+```java
+Debug sysErrDebug = new PrintStreamDebug(System.err);
+provider.setDebug(sysErrDebug);
+```
+
+And you can add your own logging framework by extending `AbstractDebug`:
+
+```java
+private static final Debug slf4jDebug = new AbstractDebug() {
+    @Override
+    public void enter(String message) {
+        logger.debug(message);
+    }
+
+    @Override
+    public void exit(String message) {
+        logger.debug(message);
+    }
+
+    @Override
+    public void exception(String message, Exception e) {
+        logger.error(message, e);
+    }
+};
+```
+
+Full example here:
 
 ```java
 import com.tersesystems.debugjsse.AbstractDebug;
