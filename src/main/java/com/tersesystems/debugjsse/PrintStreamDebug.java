@@ -1,5 +1,7 @@
 package com.tersesystems.debugjsse;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.PrintStream;
 
 public class PrintStreamDebug extends AbstractDebug {
@@ -25,4 +27,5 @@ public class PrintStreamDebug extends AbstractDebug {
         stream.println(message);
         e.printStackTrace(stream);
     }
+
 }

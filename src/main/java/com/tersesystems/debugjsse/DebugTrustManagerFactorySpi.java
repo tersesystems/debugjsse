@@ -20,17 +20,42 @@ public class DebugTrustManagerFactorySpi extends TrustManagerFactorySpi {
 
     @Override
     protected void engineInit(KeyStore ks) throws KeyStoreException {
-        factory.init(ks);
+        Object[] args = {ks};
+        debug.enter(factory, args);
+        try {
+            factory.init(ks);
+            debug.exit(factory, null, args);
+        } catch (RuntimeException re) {
+            debug.exception(factory, re, args);
+            throw re;
+        } catch (KeyStoreException e) {
+            debug.exception(factory, e, args);
+            throw e;
+        }
     }
 
     @Override
     protected void engineInit(ManagerFactoryParameters spec) throws InvalidAlgorithmParameterException {
-        factory.init(spec);
+        Object[] args = { spec };
+        debug.enter(factory, args);
+        try {
+            factory.init(spec);
+            debug.exit(factory, null, args);
+        } catch (RuntimeException re) {
+            debug.exception(factory, re, args);
+            throw re;
+        } catch (InvalidAlgorithmParameterException e) {
+            debug.exception(factory, e, args);
+            throw e;
+        }
     }
 
     @Override
     protected TrustManager[] engineGetTrustManagers() {
-        return wrapTrustManagers(factory.getTrustManagers());
+        debug.enter(factory, null);
+        TrustManager[] result = wrapTrustManagers(factory.getTrustManagers());
+        debug.exit(factory, result, null);
+        return result;
     }
 
     protected TrustManager[] wrapTrustManagers(TrustManager[] originalTrustManagers)

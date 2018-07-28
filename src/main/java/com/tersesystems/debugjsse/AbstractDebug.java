@@ -1,13 +1,16 @@
 package com.tersesystems.debugjsse;
 
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.X509ExtendedKeyManager;
-import javax.net.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.*;
 import java.net.Socket;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.Principal;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
 
 public abstract class AbstractDebug implements Debug {
 
@@ -28,6 +31,16 @@ public abstract class AbstractDebug implements Debug {
     }
 
     @Override
+    public void enter(KeyManagerFactory factory, Object[] args) {
+        exit("enter: " + keyManagerFactoryMethod(factory, args));
+    }
+
+    @Override
+    public void enter(TrustManagerFactory factory, Object[] args) {
+        exit("enter: " + trustManagerFactoryMethod(factory, args));
+    }
+
+    @Override
     public <T> T exit(X509ExtendedTrustManager delegate, String method, T result, Object[] args) {
         exit("exit:  " + trustManagerMethod(delegate, method, args) + " => " + resultString(result));
         return result;
@@ -40,6 +53,18 @@ public abstract class AbstractDebug implements Debug {
     }
 
     @Override
+    public  <T> T  exit(TrustManagerFactory factory, T result, Object[] args) {
+        exit("exit:  " + trustManagerFactoryMethod(factory, args) + " => " + resultString(result));
+        return result;
+    }
+
+    @Override
+    public  <T> T exit(KeyManagerFactory factory, T result, Object[] args) {
+        exit("exit:  " + keyManagerFactoryMethod(factory, args) + " => " + resultString(result));
+        return result;
+    }
+
+    @Override
     public void exception(X509ExtendedTrustManager delegate, String method, Exception e, Object[] args) {
         exception("exception: " + trustManagerMethod(delegate, method, args) + " ! " + e.toString(), e);
     }
@@ -47,6 +72,16 @@ public abstract class AbstractDebug implements Debug {
     @Override
     public void exception(X509ExtendedKeyManager delegate, String method, Exception e, Object[] args) {
         exception("exception: " + keyManagerMethod(delegate, method, args) + " ! " + e.toString(), e);
+    }
+
+    @Override
+    public void exception(TrustManagerFactory factory, Exception e, Object[] args) {
+        exception("exception: " + trustManagerFactoryMethod(factory, args) + " ! " + e.toString(), e);
+    }
+
+    @Override
+    public void exception(KeyManagerFactory factory, Exception e, Object[] args) {
+        exception("exception: " + keyManagerFactoryMethod(factory, args) + " ! " + e.toString(), e);
     }
 
     protected String trustManagerMethod(X509ExtendedTrustManager delegate, String method, Object[] args) {
@@ -73,7 +108,7 @@ public abstract class AbstractDebug implements Debug {
         }
     }
 
-    private String keyManagerMethod(X509ExtendedKeyManager delegate, String method, Object[] args) {
+    protected String keyManagerMethod(X509ExtendedKeyManager delegate, String method, Object[] args) {
         StringBuilder sb = new StringBuilder();
         if (method.equals("chooseEngineClientAlias")) {
             //public String chooseEngineClientAlias(String[] keyType, Principal[] issuers, SSLEngine engine)
@@ -127,6 +162,53 @@ public abstract class AbstractDebug implements Debug {
             return String.format("%s.%s(alias = %s)", delegate, method, alias);
         } else {
             return "Unknown method " + method;
+        }
+    }
+
+    protected String keyManagerFactoryMethod(KeyManagerFactory factory, Object[] args) {
+        if (args == null) {
+            return String.format("%s.getKeyManagers()", factory);
+        }
+        Object arg = args[0];
+        if (arg instanceof ManagerFactoryParameters) {
+            ManagerFactoryParameters managerFactoryParameters = (ManagerFactoryParameters) arg;
+            return String.format("%s.init: managerFactoryParameters = %s", factory, managerFactoryParameters);
+        } else {
+            KeyStore keyStore = (KeyStore) arg;
+            char[] password = (char[]) args[1];
+            return String.format("%s.init: keyStore = %s, password = %s", factory, keystoreString(keyStore), Arrays.toString(password));
+        }
+    }
+
+    protected String trustManagerFactoryMethod(TrustManagerFactory factory, Object[] args) {
+        if (args == null) {
+            return String.format("%s.getTrustManagers()", factory);
+        }
+        Object arg = args[0];
+        if (arg instanceof KeyStore) {
+            KeyStore keyStore = (KeyStore) arg;
+            return String.format("%s.init: args = %s", factory, keystoreString(keyStore));
+        } else {
+            ManagerFactoryParameters spec = (ManagerFactoryParameters) args[0];
+            return String.format("%s.init: args = %s", factory, spec);
+        }
+    }
+
+    protected String keystoreString(KeyStore ks) {
+        if (ks == null) {
+            return "null";
+        }
+        try {
+            List<String> list = new ArrayList<String>();
+            Enumeration<String> aliases = ks.aliases();
+            while (aliases.hasMoreElements()) {
+                String alias = aliases.nextElement();
+                X509Certificate[] chain = (X509Certificate[]) ks.getCertificateChain(alias);
+                list.add(alias + "=" + debugChain(chain));
+            }
+            return "KeyStore(" + list.toString() + ")";
+        } catch (KeyStoreException e) {
+            throw new IllegalStateException(e);
         }
     }
 
