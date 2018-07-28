@@ -2,16 +2,11 @@ import com.tersesystems.debugjsse.AbstractDebug;
 import com.tersesystems.debugjsse.Debug;
 import com.tersesystems.debugjsse.DebugJSSEProvider;
 import org.slf4j.LoggerFactory;
-import sun.security.tools.keytool.CertAndKeyGen;
-import sun.security.x509.X500Name;
 
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509ExtendedKeyManager;
 import javax.net.ssl.X509ExtendedTrustManager;
-import java.io.IOException;
-import java.security.*;
-import java.security.cert.CertificateException;
+import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
