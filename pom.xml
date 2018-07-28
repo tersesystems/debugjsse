@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tersesystems.debugjsse</groupId>
     <artifactId>debugjsse</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <packaging>jar</packaging>
     <name>DebugJSSE</name>
     <description>Debug TrustManager and KeyManager</description>
