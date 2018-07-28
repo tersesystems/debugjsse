@@ -64,7 +64,8 @@ provider.setDebug(sysErrDebug);
 And you can add your own logging framework by extending `AbstractDebug`:
 
 ```java
-private static final Debug slf4jDebug = new AbstractDebug() {
+org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger("Main");
+Debug slf4jDebug = new AbstractDebug() {
     @Override
     public void enter(String message) {
         logger.debug(message);
