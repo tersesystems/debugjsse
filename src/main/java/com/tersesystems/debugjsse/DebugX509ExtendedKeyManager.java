@@ -136,4 +136,9 @@ public class DebugX509ExtendedKeyManager extends X509ExtendedKeyManager {
             throw e;
         }
     }
+
+    @Override
+    public String toString() {
+        return "DebugX509ExtendedKeyManager@" + this.hashCode() + "(" + delegate.toString() + ")";
+    }
 }

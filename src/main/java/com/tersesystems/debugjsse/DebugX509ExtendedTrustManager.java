@@ -120,4 +120,9 @@ public class DebugX509ExtendedTrustManager extends X509ExtendedTrustManager {
             throw e;
         }
     }
+
+    @Override
+    public String toString() {
+        return "DebugX509ExtendedTrustManager@" + this.hashCode() + "(" + delegate.toString() + ")";
+    }
 }

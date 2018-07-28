@@ -7,22 +7,55 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DebugKeyManagerFactorySpi extends KeyManagerFactorySpi {
-    protected KeyManagerFactory originalFactory;
+    protected KeyManagerFactory factory;
 
     protected Debug debug = DebugJSSEProvider.debug;
 
     protected void engineInit(KeyStore keyStore, char[] chars) throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
-        originalFactory = KeyManagerFactory.getInstance(DebugJSSEProvider.DEFAULT_KEYMANAGER_ALGORITHM);
-        originalFactory.init(keyStore, chars);
+        Object[] args = { keyStore, chars };
+        debug.enter(factory, args);
+        try {
+            factory = KeyManagerFactory.getInstance(DebugJSSEProvider.DEFAULT_KEYMANAGER_ALGORITHM);
+            factory.init(keyStore, chars);
+            debug.exit(factory, null, args);
+        } catch (RuntimeException e) {
+            debug.exception(factory, e, args);
+            throw e;
+        } catch (KeyStoreException e) {
+            debug.exception(factory, e, args);
+            throw e;
+        } catch (NoSuchAlgorithmException e) {
+            debug.exception(factory, e, args);
+            throw e;
+        } catch (UnrecoverableKeyException e) {
+            debug.exception(factory, e, args);
+            throw e;
+        }
     }
 
     protected void engineInit(ManagerFactoryParameters managerFactoryParameters) throws InvalidAlgorithmParameterException {
-        throw new InvalidAlgorithmParameterException(
-                "SunX509KeyManager does not use ManagerFactoryParameters so we don't either");
+        Object[] args = { managerFactoryParameters };
+        debug.enter(factory, args);
+        try {
+            factory = KeyManagerFactory.getInstance(DebugJSSEProvider.DEFAULT_KEYMANAGER_ALGORITHM);
+            factory.init(managerFactoryParameters);
+            debug.exit(factory, null, args);
+        }  catch (RuntimeException e) {
+            debug.exception(factory, e, args);
+            throw e;
+        }catch (NoSuchAlgorithmException e) {
+            debug.exception(factory, e, args);
+            throw new InvalidAlgorithmParameterException(e);
+        } catch (InvalidAlgorithmParameterException e) {
+            debug.exception(factory, e, args);
+            throw e;
+        }
     }
 
     protected KeyManager[] engineGetKeyManagers() {
-        return wrapKeyManagers(originalFactory.getKeyManagers());
+        debug.enter(factory, null);
+        KeyManager[] result = wrapKeyManagers(factory.getKeyManagers());
+        return debug.exit(factory, result, null);
     }
 
     protected KeyManager[] wrapKeyManagers(KeyManager[] originalKeyManagers)
