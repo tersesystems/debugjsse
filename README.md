@@ -26,7 +26,7 @@ Packages are hosted on jCenter:
 <dependency>
     <groupId>com.tersesystems.debugjsse</groupId>
     <artifactId>debugjsse</artifactId>
-    <version>0.3.0</version><!-- see badge for latest version -->
+    <version>0.3.5</version><!-- see badge for latest version -->
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ Packages are hosted on jCenter:
 
 ```
 resolvers += Resolver.jcenterRepo 
-libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.3.0"
+libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.3.5"
 ```
 
 ## Running
@@ -157,7 +157,7 @@ trustManager = []
 ## Releasing
 
 ```bash
-mvn clean compile package deploy
+mvn -P release clean compile package deploy
 ```
 
 ## Further Reading
