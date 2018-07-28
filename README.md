@@ -26,16 +26,15 @@ Packages are hosted on jCenter:
 <dependency>
     <groupId>com.tersesystems.debugjsse</groupId>
     <artifactId>debugjsse</artifactId>
-    <version>0.2.0</version><!-- see badge for latest version -->
+    <version>0.3.0</version><!-- see badge for latest version -->
 </dependency>
 ```
 
 ### sbt
 
 ```
-//resolvers += Resolver.bintrayRepo("tersesystems", "maven")
 resolvers += Resolver.jcenterRepo 
-libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.2.0"
+libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.3.0"
 ```
 
 ## Running
