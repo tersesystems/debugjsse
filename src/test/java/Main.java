@@ -1,3 +1,4 @@
+import com.tersesystems.debugjsse.AbstractDebug;
 import com.tersesystems.debugjsse.Debug;
 import com.tersesystems.debugjsse.DebugJSSEProvider;
 import org.slf4j.LoggerFactory;
@@ -15,51 +16,25 @@ public class Main {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger("Main");
 
-    private static final Debug slf4jDebug = new Debug() {
+    private static final Debug slf4jDebug = new AbstractDebug() {
         @Override
-        public void enter(X509ExtendedTrustManager delegate, String method, Object[] args) {
-            String msg = String.format("%s: args = %s with delegate = %s", method, Arrays.toString(args), delegate);
-            logger.trace(msg);
+        public void enter(String message) {
+            logger.debug(message);
         }
 
         @Override
-        public void enter(X509ExtendedKeyManager delegate, String method, Object[] args) {
-            String msg = String.format("%s: args = %s with delegate = %s", method, Arrays.toString(args), delegate);
-            logger.trace(msg);
+        public void exit(String message) {
+            logger.debug(message);
         }
 
         @Override
-        public <T> T exit(X509ExtendedTrustManager delegate, String method, T result, Object[] args) {
-            String msg = String.format("%s: args = %s with delegate = %s, result = %s", method, Arrays.toString(args), delegate, result);
-            logger.trace(msg);
-            return result;
-        }
-
-        @Override
-        public <T> T exit(X509ExtendedKeyManager delegate, String method, T result, Object[] args) {
-            String msg = String.format("%s: args = %s with delegate = %s, result = %s", method, Arrays.toString(args), delegate, result);
-            logger.trace(msg);
-            return result;
-        }
-
-        @Override
-        public void exception(X509ExtendedTrustManager delegate, String method, Exception e, Object[] args) {
-            String msg = String.format("%s: args = %s with delegate = %s", method, Arrays.toString(args), delegate);
-            logger.error(msg, e);
-        }
-
-        @Override
-        public void exception(X509ExtendedKeyManager delegate, String method, Exception e, Object[] args) {
-            String msg = String.format("%s: args = %s with delegate = %s", method, Arrays.toString(args), delegate);
-            logger.error(msg, e);
+        public void exception(String message, Exception e) {
+            logger.error(message, e);
         }
     };
 
     public static void main(String[] args) throws Exception {
-        DebugJSSEProvider debugJSSEProvider = new DebugJSSEProvider();
-        Security.addProvider(debugJSSEProvider);
-        debugJSSEProvider.setAsDefault();
-        DebugJSSEProvider.setDebug(slf4jDebug);
+        DebugJSSEProvider.enable().setDebug(slf4jDebug);
         KeyStore ks = emptyStore();
 
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());

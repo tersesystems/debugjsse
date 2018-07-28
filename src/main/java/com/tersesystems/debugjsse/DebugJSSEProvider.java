@@ -46,6 +46,13 @@ public class DebugJSSEProvider extends Provider {
         putService(new ProxyTrustManagerFactoryService());
     }
 
+    public static DebugJSSEProvider enable() {
+        DebugJSSEProvider debugJSSEProvider = new DebugJSSEProvider();
+        Security.addProvider(debugJSSEProvider);
+        debugJSSEProvider.setAsDefault();
+        return debugJSSEProvider;
+    }
+
     public static void disable() {
         if (KEY_MANAGER_ALGORITHM.equals(Security.getProperty(SSL_KEY_MANAGER_FACTORY_SECPROP))) {
             Security.setProperty(SSL_KEY_MANAGER_FACTORY_SECPROP, DEFAULT_KEYMANAGER_ALGORITHM);
@@ -70,7 +77,8 @@ public class DebugJSSEProvider extends Provider {
         Security.setProperty(SSL_TRUST_MANAGER_FACTORY_SECPROP, DEFAULT_TRUSTMANAGER_ALGORITHM);
     }
 
-    public static void setDebug(Debug newDebug) {
+    public void setDebug(Debug newDebug) {
         debug = newDebug;
     }
+
 }

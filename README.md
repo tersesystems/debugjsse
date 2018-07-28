@@ -18,7 +18,7 @@ Packages are hosted on Bintray:
 <dependency>
     <groupId>com.tersesystems.debugjsse</groupId>
     <artifactId>debugjsse</artifactId>
-    <version>0.1.2</version><!-- see badge for latest version -->
+    <version>0.2.0</version><!-- see badge for latest version -->
 </dependency>
 ```
 
@@ -26,7 +26,7 @@ Packages are hosted on Bintray:
 
 ```
 resolvers += Resolver.bintrayRepo("tersesystems", "maven")
-libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.1.2"
+libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.2.0"
 ```
 
 ## Running
@@ -34,16 +34,7 @@ libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.1.2"
 To set the provider, call `Security.addProvider` and then call setAsDefault().
 
 ```java
-import com.tersesystems.debugjsse.DebugJSSEProvider;
-
-DebugJSSEProvider debugJSSEProvider = new DebugJSSEProvider();
-Security.addProvider(debugJSSEProvider);
-debugJSSEProvider.setAsDefault();
-```
-
-The debug implementation is `SystemOutDebug`, but you can customize it is `setDebug`.
-
-```java
+import com.tersesystems.debugjsse.AbstractDebug;
 import com.tersesystems.debugjsse.Debug;
 import com.tersesystems.debugjsse.DebugJSSEProvider;
 import org.slf4j.LoggerFactory;
@@ -61,51 +52,25 @@ public class Main {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger("Main");
 
-    private static final Debug slf4jDebug = new Debug() {
+    private static final Debug slf4jDebug = new AbstractDebug() {
         @Override
-        public void enter(X509ExtendedTrustManager delegate, String method, Object[] args) {
-            String msg = String.format("%s: args = %s with delegate = %s", method, Arrays.toString(args), delegate);
-            logger.trace(msg);
+        public void enter(String message) {
+            logger.debug(message);
         }
 
         @Override
-        public void enter(X509ExtendedKeyManager delegate, String method, Object[] args) {
-            String msg = String.format("%s: args = %s with delegate = %s", method, Arrays.toString(args), delegate);
-            logger.trace(msg);
+        public void exit(String message) {
+            logger.debug(message);
         }
 
         @Override
-        public <T> T exit(X509ExtendedTrustManager delegate, String method, T result, Object[] args) {
-            String msg = String.format("%s: args = %s with delegate = %s, result = %s", method, Arrays.toString(args), delegate, result);
-            logger.trace(msg);
-            return result;
-        }
-
-        @Override
-        public <T> T exit(X509ExtendedKeyManager delegate, String method, T result, Object[] args) {
-            String msg = String.format("%s: args = %s with delegate = %s, result = %s", method, Arrays.toString(args), delegate, result);
-            logger.trace(msg);
-            return result;
-        }
-
-        @Override
-        public void exception(X509ExtendedTrustManager delegate, String method, Exception e, Object[] args) {
-            String msg = String.format("%s: args = %s with delegate = %s", method, Arrays.toString(args), delegate);
-            logger.error(msg, e);
-        }
-
-        @Override
-        public void exception(X509ExtendedKeyManager delegate, String method, Exception e, Object[] args) {
-            String msg = String.format("%s: args = %s with delegate = %s", method, Arrays.toString(args), delegate);
-            logger.error(msg, e);
+        public void exception(String message, Exception e) {
+            logger.error(message, e);
         }
     };
 
     public static void main(String[] args) throws Exception {
-        DebugJSSEProvider debugJSSEProvider = new DebugJSSEProvider();
-        Security.addProvider(debugJSSEProvider);
-        debugJSSEProvider.setAsDefault();
-        DebugJSSEProvider.setDebug(slf4jDebug);
+        DebugJSSEProvider.enable().setDebug(slf4jDebug);
         KeyStore ks = emptyStore();
 
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -128,8 +93,8 @@ public class Main {
 Produces the output:
 
 ```
-2018-07-27 06:30:04,545 TRACE [main] - getAcceptedIssuers: args = [] with delegate = sun.security.ssl.X509TrustManagerImpl@29444d75
-2018-07-27 06:30:04,549 TRACE [main] - getAcceptedIssuers: args = [] with delegate = sun.security.ssl.X509TrustManagerImpl@29444d75, result = [Ljava.security.cert.X509Certificate;@7bfcd12c
+2018-07-27 19:55:33,392 DEBUG [main] - enter: sun.security.ssl.X509TrustManagerImpl@27abe2cd.getAcceptedIssuers()
+2018-07-27 19:55:33,396 DEBUG [main] - exit:  sun.security.ssl.X509TrustManagerImpl@27abe2cd.getAcceptedIssuers() => []
 trustManager = []
 ```
 
@@ -143,3 +108,4 @@ mvn clean compile package deploy
 
 * https://github.com/cloudfoundry/java-buildpack-security-provider/tree/master/src/main/java/org/cloudfoundry/security
 * https://github.com/scholzj/AliasKeyManager
+* https://tersesystems.com/blog/2014/07/07/play-tls-example-with-client-authentication/
