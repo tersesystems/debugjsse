@@ -10,11 +10,19 @@ More info in the [blog post](https://tersesystems.com/blog/2018/07/27/debug-java
 
 ## Installation
 
-Packages are hosted on Bintray:
+Packages are hosted on jCenter:
 
 ### Maven
 
 ```xml
+<repositories>
+  <repository>
+    <id>central</id>
+    <name>bintray</name>
+    <url>http://jcenter.bintray.com</url>
+  </repository>
+</repositories>
+
 <dependency>
     <groupId>com.tersesystems.debugjsse</groupId>
     <artifactId>debugjsse</artifactId>
@@ -25,7 +33,8 @@ Packages are hosted on Bintray:
 ### sbt
 
 ```
-resolvers += Resolver.bintrayRepo("tersesystems", "maven")
+//resolvers += Resolver.bintrayRepo("tersesystems", "maven")
+resolvers += Resolver.jcenterRepo 
 libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.2.0"
 ```
 
