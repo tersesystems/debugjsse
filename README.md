@@ -53,7 +53,7 @@ For convenience, you can call the `enable` method which does the same as the abo
 DebugJSSEProvider provider = DebugJSSEProvider.enable();
 ```
 
-Or you can set providers from the command line:
+Or you can install the [provider statically](https://docs.oracle.com/javase/8/docs/technotes/guides/security/crypto/CryptoSpec.html#ProviderInstalling) and then use it from the command line:
 
 ```bash
 export JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -Djavax.net.ssl.trustStoreProvider=debugPKIX -Djavax.net.ssl.keyStoreProvider=debugSunX509"
