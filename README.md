@@ -53,6 +53,12 @@ For convenience, you can call the `enable` method which does the same as the abo
 DebugJSSEProvider provider = DebugJSSEProvider.enable();
 ```
 
+Or you can set providers from the command line:
+
+```bash
+export JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -Djavax.net.ssl.trustStoreProvider=debugPKIX -Djavax.net.ssl.keyStoreProvider=debugSunX509"
+```
+
 You can change the `Debug` instance by calling `setDebug`:
 
 ```java
