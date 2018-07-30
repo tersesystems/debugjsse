@@ -203,7 +203,7 @@ public abstract class AbstractDebug implements Debug {
             Enumeration<String> aliases = ks.aliases();
             while (aliases.hasMoreElements()) {
                 String alias = aliases.nextElement();
-                X509Certificate[] chain = (X509Certificate[]) ks.getCertificateChain(alias);
+                Certificate[] chain = ks.getCertificateChain(alias);
                 list.add(alias + "=" + debugChain(chain));
             }
             return "KeyStore(" + list.toString() + ")";
@@ -226,11 +226,16 @@ public abstract class AbstractDebug implements Debug {
         return rs;
     }
 
-    protected String debugCertificate(X509Certificate cert) {
-        return cert.getSubjectDN().getName();
+    protected String debugCertificate(Certificate cert) {
+        if (cert instanceof X509Certificate) {
+            X509Certificate x509Certificate = (X509Certificate) cert;
+            return x509Certificate.getSubjectDN().getName();
+        } else {
+            return cert.toString();
+        }
     }
 
-    protected String debugChain(X509Certificate[] chain) {
+    protected String debugChain(Certificate[] chain) {
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < chain.length; i++) {
             sb.append(debugCertificate(chain[i]));
