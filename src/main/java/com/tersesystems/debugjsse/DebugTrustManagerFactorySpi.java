@@ -25,12 +25,12 @@ public class DebugTrustManagerFactorySpi extends TrustManagerFactorySpi {
         try {
             factory.init(ks);
             debug.exit(factory, null, args);
-        } catch (RuntimeException re) {
-            debug.exception(factory, re, args);
-            throw re;
         } catch (KeyStoreException e) {
             debug.exception(factory, e, args);
             throw e;
+        } catch (RuntimeException re) {
+            debug.exception(factory, re, args);
+            throw re;
         }
     }
 
@@ -41,12 +41,12 @@ public class DebugTrustManagerFactorySpi extends TrustManagerFactorySpi {
         try {
             factory.init(spec);
             debug.exit(factory, null, args);
-        } catch (RuntimeException re) {
-            debug.exception(factory, re, args);
-            throw re;
         } catch (InvalidAlgorithmParameterException e) {
             debug.exception(factory, e, args);
             throw e;
+        } catch (RuntimeException re) {
+            debug.exception(factory, re, args);
+            throw re;
         }
     }
 

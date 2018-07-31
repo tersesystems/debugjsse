@@ -19,12 +19,15 @@ public class DebugX509ExtendedTrustManager extends X509ExtendedTrustManager {
     @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
         String method = "checkClientTrusted";
-        Object[] args = new Object[] { chain, authType };
+        Object[] args = new Object[]{chain, authType};
 
         debug.enter(delegate, method, args);
         try {
             delegate.checkClientTrusted(chain, authType);
             debug.exit(delegate, method, null, args);
+        } catch (CertificateException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
         } catch (RuntimeException e) {
             debug.exception(delegate, method, e, args);
             throw e;
@@ -34,12 +37,15 @@ public class DebugX509ExtendedTrustManager extends X509ExtendedTrustManager {
     @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket) throws CertificateException {
         String method = "checkClientTrusted";
-        Object[] args = new Object[] { chain, authType, socket };
+        Object[] args = new Object[]{chain, authType, socket};
 
         debug.enter(delegate, method, args);
         try {
             delegate.checkClientTrusted(chain, authType, socket);
             debug.exit(delegate, method, null, args);
+        } catch (CertificateException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
         } catch (RuntimeException e) {
             debug.exception(delegate, method, e, args);
             throw e;
@@ -49,12 +55,15 @@ public class DebugX509ExtendedTrustManager extends X509ExtendedTrustManager {
     @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine sslEngine) throws CertificateException {
         String method = "checkClientTrusted";
-        Object[] args = new Object[] { chain, authType, sslEngine };
+        Object[] args = new Object[]{chain, authType, sslEngine};
 
         debug.enter(delegate, method, args);
         try {
             delegate.checkClientTrusted(chain, authType, sslEngine);
             debug.exit(delegate, method, null, args);
+        } catch (CertificateException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
         } catch (RuntimeException e) {
             debug.exception(delegate, method, e, args);
             throw e;
@@ -64,12 +73,15 @@ public class DebugX509ExtendedTrustManager extends X509ExtendedTrustManager {
     @Override
     public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
         String method = "checkServerTrusted";
-        Object[] args = new Object[] { chain, authType };
+        Object[] args = new Object[]{chain, authType};
 
         debug.enter(delegate, method, args);
         try {
             delegate.checkServerTrusted(chain, authType);
             debug.exit(delegate, method, null, args);
+        } catch (CertificateException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
         } catch (RuntimeException e) {
             debug.exception(delegate, method, e, args);
             throw e;
@@ -79,12 +91,15 @@ public class DebugX509ExtendedTrustManager extends X509ExtendedTrustManager {
     @Override
     public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket) throws CertificateException {
         String method = "checkServerTrusted";
-        Object[] args = new Object[] { chain, authType, socket };
+        Object[] args = new Object[]{chain, authType, socket};
 
         debug.enter(delegate, method, args);
         try {
             delegate.checkServerTrusted(chain, authType, socket);
             debug.exit(delegate, method, null, args);
+        } catch (CertificateException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
         } catch (RuntimeException e) {
             debug.exception(delegate, method, e, args);
             throw e;
@@ -94,12 +109,15 @@ public class DebugX509ExtendedTrustManager extends X509ExtendedTrustManager {
     @Override
     public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine sslEngine) throws CertificateException {
         String method = "checkServerTrusted";
-        Object[] args = new Object[] { chain, authType, sslEngine };
+        Object[] args = new Object[]{chain, authType, sslEngine};
 
         debug.enter(delegate, method, args);
         try {
             delegate.checkServerTrusted(chain, authType, sslEngine);
             debug.exit(delegate, method, null, args);
+        } catch (CertificateException e) {
+            debug.exception(delegate, method, e, args);
+            throw e;
         } catch (RuntimeException e) {
             debug.exception(delegate, method, e, args);
             throw e;
@@ -109,7 +127,7 @@ public class DebugX509ExtendedTrustManager extends X509ExtendedTrustManager {
     @Override
     public X509Certificate[] getAcceptedIssuers() {
         final String method = "getAcceptedIssuers";
-        Object[] args = new Object[] { };
+        Object[] args = new Object[]{};
 
         debug.enter(delegate, method, args);
         try {
