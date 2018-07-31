@@ -213,13 +213,14 @@ public abstract class AbstractDebug implements Debug {
     }
 
     protected String resultString(Object result) {
-        String rs;
+        if (result == null){
+            return "null";
+        }
+        final String rs;
         if (result instanceof X509Certificate[]) {
             rs = debugChain((X509Certificate[]) result);
         } else if (result instanceof Object[]) {
             rs = Arrays.toString((Object[]) result);
-        } else if (result == null){
-            rs = "null";
         } else {
             rs = result.toString();
         }
@@ -227,15 +228,22 @@ public abstract class AbstractDebug implements Debug {
     }
 
     protected String debugCertificate(Certificate cert) {
+        if (cert == null) {
+            return "null";
+        }
+        
         if (cert instanceof X509Certificate) {
             X509Certificate x509Certificate = (X509Certificate) cert;
             return x509Certificate.getSubjectDN().getName();
-        } else {
-            return cert.toString();
         }
+
+        return cert.toString();
     }
 
     protected String debugChain(Certificate[] chain) {
+        if (chain == null) {
+            return "null";
+        }
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < chain.length; i++) {
             sb.append(debugCertificate(chain[i]));
