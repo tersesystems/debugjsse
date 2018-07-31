@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.tersesystems.debugjsse</groupId>
   <artifactId>debugjsse</artifactId>
-  <version>0.3.7</version>
+  <version>0.3.8-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>DebugJSSE</name>
   <description>Debug TrustManager and KeyManager</description>
@@ -47,7 +47,7 @@
     <connection>scm:git:git@github.com:tersesystems/debugjsse.git</connection>
     <developerConnection>scm:git:git@github.com:tersesystems/debugjsse.git</developerConnection>
     <url>git@github.com:tersesystems/debugjsse.git</url>
-    <tag>0.3.7</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencies>
