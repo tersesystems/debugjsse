@@ -2,6 +2,7 @@ package com.tersesystems.debugjsse;
 
 import javax.net.ssl.*;
 import java.net.Socket;
+import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.Principal;
@@ -175,8 +176,8 @@ public abstract class AbstractDebug implements Debug {
             return String.format("%s.init: managerFactoryParameters = %s", factory, managerFactoryParameters);
         } else {
             KeyStore keyStore = (KeyStore) arg;
-            char[] password = (char[]) args[1];
-            return String.format("%s.init: keyStore = %s, password = %s", factory, keystoreString(keyStore), Arrays.toString(password));
+            //char[] password = (char[]) args[1];
+            return String.format("%s.init: keyStore = %s, password = [CENSORED]", factory, keystoreString(keyStore));
         }
     }
 
@@ -203,8 +204,14 @@ public abstract class AbstractDebug implements Debug {
             Enumeration<String> aliases = ks.aliases();
             while (aliases.hasMoreElements()) {
                 String alias = aliases.nextElement();
-                Certificate[] chain = ks.getCertificateChain(alias);
-                list.add(alias + "=" + debugChain(chain));
+                if (ks.isCertificateEntry(alias)) {
+                    Certificate cert = ks.getCertificate(alias);
+                    list.add(alias + "=" + debugCertificate(cert));
+                } else if (ks.isKeyEntry(alias)) {
+                    // Key key = ks.getKey(alias, password);
+                    Certificate[] chain = ks.getCertificateChain(alias);
+                    list.add(alias + "=" + debugChain(chain));
+                }
             }
             return "KeyStore(" + list.toString() + ")";
         } catch (KeyStoreException e) {
