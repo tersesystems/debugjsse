@@ -16,6 +16,10 @@ public class DebugX509ExtendedTrustManager extends X509ExtendedTrustManager {
         this.debug = debug;
     }
 
+    public X509ExtendedTrustManager getDelegate() {
+        return delegate;
+    }
+
     @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
         String method = "checkClientTrusted";

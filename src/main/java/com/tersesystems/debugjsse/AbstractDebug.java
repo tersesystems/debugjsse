@@ -2,16 +2,13 @@ package com.tersesystems.debugjsse;
 
 import javax.net.ssl.*;
 import java.net.Socket;
-import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.Principal;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractDebug implements Debug {
 
@@ -20,6 +17,15 @@ public abstract class AbstractDebug implements Debug {
     public abstract void exit(String message);
 
     public abstract void exception(String message, Exception e);
+
+    protected final WeakHashMap<X509ExtendedTrustManager, String> trustManagerMap = new WeakHashMap<X509ExtendedTrustManager, String>();
+    protected final WeakHashMap<X509ExtendedKeyManager, String> keyManagerMap = new WeakHashMap<X509ExtendedKeyManager, String>();
+    protected final WeakHashMap<KeyManagerFactory, String> keyManagerFactoryMap = new WeakHashMap<KeyManagerFactory, String>();
+    protected final WeakHashMap<TrustManagerFactory, String> trustManagerFactoryMap = new WeakHashMap<TrustManagerFactory, String>();
+    protected final AtomicInteger trustManagerCounter = new AtomicInteger(0);
+    protected final AtomicInteger keyManagerCounter = new AtomicInteger(0);
+    protected final AtomicInteger keyManagerFactoryCounter = new AtomicInteger(0);
+    protected final AtomicInteger trustManagerFactoryCounter = new AtomicInteger(0);
 
     @Override
     public void enter(X509ExtendedTrustManager delegate, String method, Object[] args) {
@@ -33,12 +39,12 @@ public abstract class AbstractDebug implements Debug {
 
     @Override
     public void enter(KeyManagerFactory factory, Object[] args) {
-        exit("enter: " + keyManagerFactoryMethod(factory, args));
+        enter("enter: " + keyManagerFactoryMethod(factory, args));
     }
 
     @Override
     public void enter(TrustManagerFactory factory, Object[] args) {
-        exit("enter: " + trustManagerFactoryMethod(factory, args));
+        enter("enter: " + trustManagerFactoryMethod(factory, args));
     }
 
     @Override
@@ -54,13 +60,13 @@ public abstract class AbstractDebug implements Debug {
     }
 
     @Override
-    public  <T> T  exit(TrustManagerFactory factory, T result, Object[] args) {
+    public <T> T exit(TrustManagerFactory factory, T result, Object[] args) {
         exit("exit:  " + trustManagerFactoryMethod(factory, args) + " => " + resultString(result));
         return result;
     }
 
     @Override
-    public  <T> T exit(KeyManagerFactory factory, T result, Object[] args) {
+    public <T> T exit(KeyManagerFactory factory, T result, Object[] args) {
         exit("exit:  " + keyManagerFactoryMethod(factory, args) + " => " + resultString(result));
         return result;
     }
@@ -87,12 +93,12 @@ public abstract class AbstractDebug implements Debug {
 
     protected String trustManagerMethod(X509ExtendedTrustManager delegate, String method, Object[] args) {
         if (method.equals("getAcceptedIssuers")) {
-           return String.format("%s.%s()", delegate, method);
+            return String.format("%s.%s()", alias(delegate), method);
         } else {
             X509Certificate[] chain = (X509Certificate[]) args[0];
             String authType = (String) args[1];
 
-            String msg = String.format("%s.%s(chain = %s, authType = %s", delegate, method, debugChain(chain), authType);
+            String msg = String.format("%s.%s(chain = %s, authType = %s", alias(delegate), method, debugChain(chain), authType);
             if (args.length == 3) {
                 Object arg = args[2];
                 if (arg instanceof SSLEngine) {
@@ -117,45 +123,45 @@ public abstract class AbstractDebug implements Debug {
             Principal[] issuers = (Principal[]) args[1];
             SSLEngine engine = (SSLEngine) args[2];
 
-            return String.format("%s.%s(keyTypes = %s, issuers = %s, engine = %s)", delegate, method, Arrays.toString(keyTypes), Arrays.toString(issuers), engine);
+            return String.format("%s.%s(keyTypes = %s, issuers = %s, engine = %s)", alias(delegate), method, Arrays.toString(keyTypes), Arrays.toString(issuers), engine);
         } else if (method.equals("chooseEngineServerAlias")) {
             //public String chooseEngineServerAlias(String keyType, Principal[] issuers, SSLEngine engine)
             String keyType = (String) args[0];
             Principal[] issuers = (Principal[]) args[1];
             SSLEngine engine = (SSLEngine) args[2];
 
-            return String.format("%s.%s(keyTypes = %s, issuers = %s, engine = %s)", delegate, method, keyType, Arrays.toString(issuers), engine);
+            return String.format("%s.%s(keyTypes = %s, issuers = %s, engine = %s)", alias(delegate), method, keyType, Arrays.toString(issuers), engine);
         } else if (method.equals("getClientAliases")) {
             //public String[] getClientAliases(String keyType, Principal[] issuers)
             String keyType = (String) args[0];
             Principal[] issuers = (Principal[]) args[1];
 
-            return String.format("%s.%s(keyTypes = %s, issuers = %s, engine = %s)", delegate, method, keyType, Arrays.toString(issuers));
+            return String.format("%s.%s(keyTypes = %s, issuers = %s, engine = %s)", alias(delegate), method, keyType, Arrays.toString(issuers));
         } else if (method.equals("getServerAliases")) {
             //public String[] getServerAliases(String keyType, Principal[] issuers)
             String keyType = (String) args[0];
             Principal[] issuers = (Principal[]) args[1];
 
-            return String.format("%s.%s(keyTypes = %s, issuers = %s)", delegate, method, keyType, Arrays.toString(issuers));
+            return String.format("%s.%s(keyTypes = %s, issuers = %s)", alias(delegate), method, keyType, Arrays.toString(issuers));
         } else if (method.equals("chooseClientAlias")) {
             //public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket)
             String keyType = (String) args[0];
             Principal[] issuers = (Principal[]) args[1];
             Socket socket = (Socket) args[2];
 
-            return String.format("%s.%s(keyTypes = %s, issuers = %s, socket = %s)", delegate, method, keyType, Arrays.toString(issuers), socket);
+            return String.format("%s.%s(keyTypes = %s, issuers = %s, socket = %s)", alias(delegate), method, keyType, Arrays.toString(issuers), socket);
         } else if (method.equals("chooseServerAlias")) {
             //public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket)
             String keyType = (String) args[0];
             Principal[] issuers = (Principal[]) args[1];
             Socket socket = (Socket) args[2];
 
-            return String.format("%s.%s(keyTypes = %s, issuers = %s, socket = %s)", delegate, method, keyType, Arrays.toString(issuers), socket);
+            return String.format("%s.%s(keyTypes = %s, issuers = %s, socket = %s)", alias(delegate), method, keyType, Arrays.toString(issuers), socket);
         } else if (method.equals("getCertificateChain")) {
             //public X509Certificate[] getCertificateChain(String alias)
             String alias = (String) args[0];
 
-            return String.format("%s.%s(alias = %s)", delegate, method, alias);
+            return String.format("%s.%s(alias = %s)", alias(delegate), method, alias);
         } else if (method.equals("getPrivateKey")) {
             //public PrivateKey getPrivateKey(String alias)
             String alias = (String) args[0];
@@ -166,35 +172,35 @@ public abstract class AbstractDebug implements Debug {
         }
     }
 
-    protected String keyManagerFactoryMethod(KeyManagerFactory factory, Object[] args) {
+    protected String keyManagerFactoryMethod(KeyManagerFactory delegate, Object[] args) {
         if (args == null) {
-            return String.format("%s.getKeyManagers()", factory);
+            return String.format("%s.getKeyManagers()", alias(delegate));
         }
         Object arg = args[0];
         if (arg instanceof ManagerFactoryParameters) {
             ManagerFactoryParameters managerFactoryParameters = (ManagerFactoryParameters) arg;
-            return String.format("%s.init: managerFactoryParameters = %s", factory, managerFactoryParameters);
+            return String.format("%s.init: managerFactoryParameters = %s", alias(delegate), managerFactoryParameters);
         } else {
             KeyStore keyStore = (KeyStore) arg;
             //char[] password = (char[]) args[1];
-            return String.format("%s.init: keyStore = %s, password = [CENSORED]", factory, keystoreString(keyStore));
+            return String.format("%s.init: keyStore = %s, password = [CENSORED]", alias(delegate), keystoreString(keyStore));
         }
     }
 
-    protected String trustManagerFactoryMethod(TrustManagerFactory factory, Object[] args) {
+    protected String trustManagerFactoryMethod(TrustManagerFactory delegate, Object[] args) {
         if (args == null) {
-            return String.format("%s.getTrustManagers()", factory);
+            return String.format("%s.getTrustManagers()", alias(delegate));
         }
         Object arg = args[0];
         if (arg instanceof KeyStore) {
             KeyStore keyStore = (KeyStore) arg;
-            return String.format("%s.init: args = %s", factory, keystoreString(keyStore));
+            return String.format("%s.init: args = %s", alias(delegate), keystoreString(keyStore));
         } else {
             ManagerFactoryParameters spec = (ManagerFactoryParameters) args[0];
-            return String.format("%s.init: args = %s", factory, spec);
+            return String.format("%s.init: args = %s", alias(delegate), spec);
         }
     }
-
+    
     protected String keystoreString(KeyStore ks) {
         if (ks == null) {
             return "null";
@@ -220,12 +226,24 @@ public abstract class AbstractDebug implements Debug {
     }
 
     protected String resultString(Object result) {
-        if (result == null){
+        if (result == null) {
             return "null";
         }
         final String rs;
         if (result instanceof X509Certificate[]) {
             rs = debugChain((X509Certificate[]) result);
+        } else if (result instanceof X509ExtendedKeyManager) {
+            return alias((X509ExtendedKeyManager) result);
+        } else if (result instanceof KeyManager[]) {
+            return alias((KeyManager[]) result);
+        } else if (result instanceof X509ExtendedTrustManager) {
+            return alias((X509ExtendedTrustManager) result);
+        } else if (result instanceof TrustManager[]) {
+            return alias((TrustManager[]) result);
+        } else if (result instanceof TrustManagerFactory) {
+            return alias((TrustManagerFactory) result);
+        } else if (result instanceof KeyManagerFactory) {
+            return alias((KeyManagerFactory) result);
         } else if (result instanceof Object[]) {
             rs = Arrays.toString((Object[]) result);
         } else {
@@ -238,7 +256,7 @@ public abstract class AbstractDebug implements Debug {
         if (cert == null) {
             return "null";
         }
-        
+
         if (cert instanceof X509Certificate) {
             X509Certificate x509Certificate = (X509Certificate) cert;
             return x509Certificate.getSubjectDN().getName();
@@ -254,7 +272,7 @@ public abstract class AbstractDebug implements Debug {
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < chain.length; i++) {
             sb.append(debugCertificate(chain[i]));
-            if (i < chain.length - 1){
+            if (i < chain.length - 1) {
                 sb.append(",");
             }
         }
@@ -262,4 +280,84 @@ public abstract class AbstractDebug implements Debug {
         return sb.toString();
     }
 
+    protected String generateAlias(X509ExtendedTrustManager delegate) {
+        return "trustManager" + trustManagerCounter.incrementAndGet() + "-" + System.currentTimeMillis() + "@" + delegate.hashCode();
+    }
+
+
+    protected String generateAlias(X509ExtendedKeyManager delegate) {
+        return "keyManager" + keyManagerCounter.incrementAndGet() + "-" + System.currentTimeMillis() + "@" + delegate.hashCode();
+    }
+
+    protected String generateAlias(KeyManagerFactory delegate) {
+        return "keyManagerFactory" + keyManagerFactoryCounter.incrementAndGet() + "-" + System.currentTimeMillis() + "@" + delegate.hashCode();
+    }
+
+    protected String generateAlias(TrustManagerFactory delegate) {
+        return "trustManagerFactory" + trustManagerFactoryCounter.incrementAndGet() + "-" + System.currentTimeMillis() + "@" + delegate.hashCode();
+    }
+
+    protected String alias(X509ExtendedTrustManager delegate) {
+        if (!trustManagerMap.containsKey(delegate)) {
+            String alias = generateAlias(delegate);
+            trustManagerMap.put(delegate, alias);
+        }
+        return trustManagerMap.get(delegate);
+    }
+
+    protected String alias(X509ExtendedKeyManager delegate) {
+        if (!keyManagerMap.containsKey(delegate)) {
+            String alias = generateAlias(delegate);
+            keyManagerMap.put(delegate, alias);
+        }
+        return keyManagerMap.get(delegate);
+    }
+
+    protected String alias(KeyManagerFactory delegate) {
+        if (!keyManagerFactoryMap.containsKey(delegate)) {
+            String alias = generateAlias(delegate);
+            keyManagerFactoryMap.put(delegate, alias);
+        }
+        return keyManagerFactoryMap.get(delegate);
+    }
+
+    protected String alias(TrustManagerFactory delegate) {
+        if (!trustManagerFactoryMap.containsKey(delegate)) {
+            String alias = generateAlias(delegate);
+            trustManagerFactoryMap.put(delegate, alias);
+        }
+        return trustManagerFactoryMap.get(delegate);
+    }
+
+    protected String alias(KeyManager[] result) {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < result.length; i++) {
+            if (result[i] instanceof DebugX509ExtendedKeyManager) {
+                DebugX509ExtendedKeyManager debugX509ExtendedKeyManager = (DebugX509ExtendedKeyManager) result[i];
+                X509ExtendedKeyManager delegate = debugX509ExtendedKeyManager.getDelegate();
+                sb.append(alias(delegate));
+            } else {
+                sb.append(alias((X509ExtendedKeyManager) result[i]));
+            }
+            if (i != result.length - 1) sb.append(",");
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    protected String alias(TrustManager[] result) {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < result.length; i++) {
+            if (result[i] instanceof DebugX509ExtendedTrustManager) {
+                DebugX509ExtendedTrustManager debugManager = (DebugX509ExtendedTrustManager) result[i];
+                X509ExtendedTrustManager delegate = debugManager.getDelegate();
+                sb.append(alias(delegate));
+            } else {
+                sb.append(alias((X509ExtendedTrustManager) result[i]));
+            }
+            if (i != result.length - 1) sb.append(",");
+        }
+        sb.append("]");
+        return sb.toString();
+    }
 }

@@ -17,6 +17,10 @@ public class DebugX509ExtendedKeyManager extends X509ExtendedKeyManager {
         this.debug = debug;
     }
 
+    public X509ExtendedKeyManager getDelegate() {
+        return delegate;
+    }
+
     @Override
     public String chooseEngineClientAlias(String[] keyTypes, Principal[] issuers, SSLEngine engine) {
         final String method = "chooseEngineClientAlias";
