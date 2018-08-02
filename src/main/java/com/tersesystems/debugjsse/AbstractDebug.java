@@ -236,7 +236,7 @@ public abstract class AbstractDebug implements Debug {
             rs = debugChain((X509Certificate[]) result);
         } else if (result instanceof X509ExtendedKeyManager) {
             return alias((X509ExtendedKeyManager) result);
-        }  else if (result instanceof KeyManager[]) {
+        } else if (result instanceof KeyManager[]) {
             return alias((KeyManager[]) result);
         } else if (result instanceof X509ExtendedTrustManager) {
             return alias((X509ExtendedTrustManager) result);
@@ -246,9 +246,9 @@ public abstract class AbstractDebug implements Debug {
             return alias((TrustManagerFactory) result);
         } else if (result instanceof KeyManagerFactory) {
             return alias((KeyManagerFactory) result);
-        }else if (result instanceof Object[]) {
+        } else if (result instanceof Object[]) {
             rs = Arrays.toString((Object[]) result);
-        }  else {
+        } else {
             rs = result.toString();
         }
         return rs;
