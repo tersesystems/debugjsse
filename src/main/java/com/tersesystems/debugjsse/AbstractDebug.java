@@ -187,7 +187,6 @@ public abstract class AbstractDebug implements Debug {
         }
     }
 
-
     protected String trustManagerFactoryMethod(TrustManagerFactory delegate, Object[] args) {
         if (args == null) {
             return String.format("%s.getTrustManagers()", alias(delegate));
@@ -201,8 +200,7 @@ public abstract class AbstractDebug implements Debug {
             return String.format("%s.init: args = %s", alias(delegate), spec);
         }
     }
-
-
+    
     protected String keystoreString(KeyStore ks) {
         if (ks == null) {
             return "null";
