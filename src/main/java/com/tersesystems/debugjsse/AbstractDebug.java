@@ -256,12 +256,10 @@ public abstract class AbstractDebug implements Debug {
         if (cert == null) {
             return "null";
         }
-
         if (cert instanceof X509Certificate) {
             X509Certificate x509Certificate = (X509Certificate) cert;
             return x509Certificate.getSubjectDN().getName();
         }
-
         return cert.toString();
     }
 
@@ -280,24 +278,10 @@ public abstract class AbstractDebug implements Debug {
         return sb.toString();
     }
 
-    protected String generateAlias(X509ExtendedTrustManager delegate) {
-        return "trustManager" + trustManagerCounter.incrementAndGet() + "-" + System.currentTimeMillis() + "@" + delegate.hashCode();
-    }
-
-
-    protected String generateAlias(X509ExtendedKeyManager delegate) {
-        return "keyManager" + keyManagerCounter.incrementAndGet() + "-" + System.currentTimeMillis() + "@" + delegate.hashCode();
-    }
-
-    protected String generateAlias(KeyManagerFactory delegate) {
-        return "keyManagerFactory" + keyManagerFactoryCounter.incrementAndGet() + "-" + System.currentTimeMillis() + "@" + delegate.hashCode();
-    }
-
-    protected String generateAlias(TrustManagerFactory delegate) {
-        return "trustManagerFactory" + trustManagerFactoryCounter.incrementAndGet() + "-" + System.currentTimeMillis() + "@" + delegate.hashCode();
-    }
-
     protected String alias(X509ExtendedTrustManager delegate) {
+        if (delegate == null) {
+            return "null";
+        }
         if (!trustManagerMap.containsKey(delegate)) {
             String alias = generateAlias(delegate);
             trustManagerMap.put(delegate, alias);
@@ -306,6 +290,9 @@ public abstract class AbstractDebug implements Debug {
     }
 
     protected String alias(X509ExtendedKeyManager delegate) {
+        if (delegate == null) {
+            return "null";
+        }
         if (!keyManagerMap.containsKey(delegate)) {
             String alias = generateAlias(delegate);
             keyManagerMap.put(delegate, alias);
@@ -314,6 +301,9 @@ public abstract class AbstractDebug implements Debug {
     }
 
     protected String alias(KeyManagerFactory delegate) {
+        if (delegate == null) {
+            return "null";
+        }
         if (!keyManagerFactoryMap.containsKey(delegate)) {
             String alias = generateAlias(delegate);
             keyManagerFactoryMap.put(delegate, alias);
@@ -322,6 +312,9 @@ public abstract class AbstractDebug implements Debug {
     }
 
     protected String alias(TrustManagerFactory delegate) {
+        if (delegate == null) {
+            return "null";
+        }
         if (!trustManagerFactoryMap.containsKey(delegate)) {
             String alias = generateAlias(delegate);
             trustManagerFactoryMap.put(delegate, alias);
@@ -330,6 +323,9 @@ public abstract class AbstractDebug implements Debug {
     }
 
     protected String alias(KeyManager[] result) {
+        if (result == null) {
+            return "null";
+        }
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < result.length; i++) {
             if (result[i] instanceof DebugX509ExtendedKeyManager) {
@@ -346,6 +342,9 @@ public abstract class AbstractDebug implements Debug {
     }
 
     protected String alias(TrustManager[] result) {
+        if (result == null) {
+            return "null";
+        }
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < result.length; i++) {
             if (result[i] instanceof DebugX509ExtendedTrustManager) {
@@ -360,4 +359,21 @@ public abstract class AbstractDebug implements Debug {
         sb.append("]");
         return sb.toString();
     }
+
+    protected String generateAlias(X509ExtendedTrustManager delegate) {
+        return "trustManager" + trustManagerCounter.incrementAndGet() + "-" + System.currentTimeMillis() + "@" + delegate.hashCode();
+    }
+
+    protected String generateAlias(X509ExtendedKeyManager delegate) {
+        return "keyManager" + keyManagerCounter.incrementAndGet() + "-" + System.currentTimeMillis() + "@" + delegate.hashCode();
+    }
+
+    protected String generateAlias(KeyManagerFactory delegate) {
+        return "keyManagerFactory" + keyManagerFactoryCounter.incrementAndGet() + "-" + System.currentTimeMillis() + "@" + delegate.hashCode();
+    }
+
+    protected String generateAlias(TrustManagerFactory delegate) {
+        return "trustManagerFactory" + trustManagerFactoryCounter.incrementAndGet() + "-" + System.currentTimeMillis() + "@" + delegate.hashCode();
+    }
+
 }
