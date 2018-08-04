@@ -6,16 +6,21 @@ import java.security.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DebugKeyManagerFactorySpi extends KeyManagerFactorySpi {
+public abstract class DebugKeyManagerFactorySpi extends KeyManagerFactorySpi {
     protected KeyManagerFactory factory;
 
     protected Debug debug = DebugJSSEProvider.debug;
+
+    /**
+     * @return The key manager algorithm that this factory SPI will wrap.
+     */
+    public abstract String getAlgorithm();
 
     protected void engineInit(KeyStore keyStore, char[] chars) throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
         Object[] args = { keyStore, chars };
         debug.enter(factory, args);
         try {
-            factory = KeyManagerFactory.getInstance(DebugJSSEProvider.DEFAULT_KEYMANAGER_ALGORITHM);
+            factory = KeyManagerFactory.getInstance(getAlgorithm());
             factory.init(keyStore, chars);
             debug.exit(factory, null, args);
         } catch (RuntimeException e) {
@@ -37,7 +42,7 @@ public class DebugKeyManagerFactorySpi extends KeyManagerFactorySpi {
         Object[] args = { managerFactoryParameters };
         debug.enter(factory, args);
         try {
-            factory = KeyManagerFactory.getInstance(DebugJSSEProvider.DEFAULT_KEYMANAGER_ALGORITHM);
+            factory = KeyManagerFactory.getInstance(getAlgorithm());
             factory.init(managerFactoryParameters);
             debug.exit(factory, null, args);
         }  catch (RuntimeException e) {
@@ -63,9 +68,12 @@ public class DebugKeyManagerFactorySpi extends KeyManagerFactorySpi {
         List<KeyManager> wrapped = new ArrayList<KeyManager>();
 
         for (int i = 0; i < originalKeyManagers.length; i++) {
-            if (originalKeyManagers[i] instanceof X509ExtendedKeyManager) {
-                KeyManager wrap = new DebugX509ExtendedKeyManager((X509ExtendedKeyManager) originalKeyManagers[i], debug);
+            KeyManager originalKeyManager = originalKeyManagers[i];
+            if (originalKeyManager instanceof X509ExtendedKeyManager) {
+                KeyManager wrap = new DebugX509ExtendedKeyManager((X509ExtendedKeyManager) originalKeyManager, debug);
                 wrapped.add(wrap);
+            } else {
+                throw new IllegalStateException("original key manager is not an instance of X509ExtendedKeyManager: " + originalKeyManager);
             }
         }
 

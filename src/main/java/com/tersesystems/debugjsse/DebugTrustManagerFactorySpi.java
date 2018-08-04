@@ -8,14 +8,19 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DebugTrustManagerFactorySpi extends TrustManagerFactorySpi {
+public abstract class DebugTrustManagerFactorySpi extends TrustManagerFactorySpi {
 
     protected Debug debug = DebugJSSEProvider.debug;
 
     protected TrustManagerFactory factory;
 
+    /**
+     * @return The key manager algorithm that this factory SPI will wrap.
+     */
+    public abstract String getAlgorithm();
+
     public DebugTrustManagerFactorySpi() throws NoSuchAlgorithmException {
-        factory = TrustManagerFactory.getInstance(DebugJSSEProvider.DEFAULT_TRUSTMANAGER_ALGORITHM);
+        factory = TrustManagerFactory.getInstance(getAlgorithm());
     }
 
     @Override
@@ -63,9 +68,12 @@ public class DebugTrustManagerFactorySpi extends TrustManagerFactorySpi {
         List<TrustManager> wrapped = new ArrayList<TrustManager>();
 
         for (int i = 0; i < originalTrustManagers.length; i++) {
-            if (originalTrustManagers[i] instanceof X509ExtendedTrustManager) {
-                TrustManager wrap = new DebugX509ExtendedTrustManager((X509ExtendedTrustManager) originalTrustManagers[i], debug);
+            TrustManager originalTrustManager = originalTrustManagers[i];
+            if (originalTrustManager instanceof X509ExtendedTrustManager) {
+                TrustManager wrap = new DebugX509ExtendedTrustManager((X509ExtendedTrustManager) originalTrustManager, debug);
                 wrapped.add(wrap);
+            } else {
+                throw new IllegalStateException("original trust manager is not an instance of X509ExtendedTrustManager: " + originalTrustManager);
             }
         }
 
