@@ -103,12 +103,12 @@ public abstract class AbstractDebug implements Debug {
                 Object arg = args[2];
                 if (arg instanceof SSLEngine) {
                     SSLEngine sslEngine = (SSLEngine) arg;
-                    msg += "sslEngine = " + sslEngine;
+                    msg += ", sslEngine = " + sslEngine;
                 } else if (arg instanceof SSLSocket) {
                     SSLSocket sslSocket = (SSLSocket) arg;
-                    msg += "sslSocket = " + sslSocket;
+                    msg += ", sslSocket = " + sslSocket;
                 } else {
-                    msg += "arg = " + arg;
+                    msg += ", arg = " + arg;
                 }
             }
             return msg + ")";
