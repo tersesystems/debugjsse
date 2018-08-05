@@ -132,22 +132,12 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         DebugJSSEProvider.enable().setDebug(slf4jDebug);
-        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(null, "changeit".toCharArray());
 
-        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init(ks);
-        TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-        X509ExtendedTrustManager trustManager = (X509ExtendedTrustManager) trustManagers[0];
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, null, null);
+        SSLEngine sslEngine = sslContext.createSSLEngine();
 
-        X509Certificate[] acceptedIssuers = trustManager.getAcceptedIssuers();
-        System.out.println("trustManager = " + Arrays.toString(acceptedIssuers));
-    }
-
-    private static KeyStore emptyStore() throws Exception {
-        KeyStore ks = KeyStore.getInstance("JKS");
-        ks.load(null, "changeit".toCharArray());
-        return ks;
+        System.out.println("sslEngine = " + sslEngine);
     }
 }
 ```
