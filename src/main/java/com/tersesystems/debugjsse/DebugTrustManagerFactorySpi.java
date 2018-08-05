@@ -1,10 +1,7 @@
 package com.tersesystems.debugjsse;
 
 import javax.net.ssl.*;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +16,8 @@ public abstract class DebugTrustManagerFactorySpi extends TrustManagerFactorySpi
      */
     public abstract String getAlgorithm();
 
-    public DebugTrustManagerFactorySpi() throws NoSuchAlgorithmException {
-        factory = TrustManagerFactory.getInstance(getAlgorithm());
+    public DebugTrustManagerFactorySpi() throws NoSuchAlgorithmException, NoSuchProviderException {
+        factory = TrustManagerFactory.getInstance(getAlgorithm(), "SunJSSE");
     }
 
     @Override

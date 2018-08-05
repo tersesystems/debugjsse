@@ -43,27 +43,16 @@ The security provider must be installed before it will work.
 
 ### Installing Dynamically
 
-To set the provider from inside a running JVM, call `Security.addProvider` and then call `setAsDefault()`.
-
 ```java
-DebugJSSEProvider provider = new DebugJSSEProvider();
-Security.addProvider(provider);
-provider.setAsDefault();
-```
-
-For convenience, you can call the `enable` method which does the same as the above:
-
-```java
-DebugJSSEProvider provider = DebugJSSEProvider.enable();
+DebugJSSEProvider provider = DebugJSSEProvider.enable();)
 ```
 
 ### Installing Statically
 
-You can install the [provider statically](https://docs.oracle.com/javase/8/docs/technotes/guides/security/crypto/CryptoSpec.html#ProviderInstalling) and then use it from the command line when you want to:
+You can install the [provider statically](https://docs.oracle.com/javase/9/security/java-secure-socket-extension-jsse-reference-guide.htm#JSSEC-GUID-8BC473B2-CD64-4E8B-8136-80BB286091B1) by adding the provider as the highest priority item in `<java-home>/conf/security/java.security`:
 
 ```bash
-export JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -Djavax.net.ssl.trustStoreProvider=debugPKIX"
-export JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -Djavax.net.ssl.keyStoreProvider=debugSunX509"
+security.provider.1=debugJSSE|com.tersesystems.debugjsse.DebugJSSEProvider
 ```
 
 ## Setting Debug

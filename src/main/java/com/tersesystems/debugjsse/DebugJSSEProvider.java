@@ -1,9 +1,12 @@
 package com.tersesystems.debugjsse;
 
 import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLContextSpi;
 import javax.net.ssl.TrustManagerFactory;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
 import java.util.Arrays;
@@ -15,20 +18,20 @@ public class DebugJSSEProvider extends Provider {
     private static String defaultKeyManagerAlgorithm;
     private static String defaultTrustManagerAlgorithm;
 
-    private final static String NAME = "debugJSSE";
-    private final static Double VERSION = 1.0;
-    private final static String INFO = "Debug JSSE";
+    public final static String NAME = "debugJSSE";
+    public final static Double VERSION = 1.0;
+    public final static String INFO = "Debug JSSE";
 
-    private static final String SSL_KEY_MANAGER_FACTORY_SECPROP = "ssl.KeyManagerFactory.algorithm";
-    private static final String SSL_TRUST_MANAGER_FACTORY_SECPROP = "ssl.TrustManagerFactory.algorithm";
-    private static final String KEY_MANAGER_FACTORY = "KeyManagerFactory";
-    private static final String TRUST_MANAGER_FACTORY = "TrustManagerFactory";
+     private static final String SSL_KEY_MANAGER_FACTORY_SECPROP = "ssl.KeyManagerFactory.algorithm";
+     private static final String SSL_TRUST_MANAGER_FACTORY_SECPROP = "ssl.TrustManagerFactory.algorithm";
+     private static final String KEY_MANAGER_FACTORY = "KeyManagerFactory";
+     private static final String TRUST_MANAGER_FACTORY = "TrustManagerFactory";
 
     private static boolean enabled = false;
 
     private class DebugSunX509KeyManagerFactoryService extends Service {
-        public DebugSunX509KeyManagerFactoryService() {
-            super(DebugJSSEProvider.this, KEY_MANAGER_FACTORY, "debugSunX509",
+        DebugSunX509KeyManagerFactoryService() {
+            super(DebugJSSEProvider.this, KEY_MANAGER_FACTORY, "SunX509",
                     DebugSunX509KeyManagerFactorySpi.class.getName(), null, null);
         }
     }
@@ -41,9 +44,9 @@ public class DebugJSSEProvider extends Provider {
     }
 
     private class DebugNewSunX509KeyManagerFactoryService extends Service {
-        public DebugNewSunX509KeyManagerFactoryService() {
-            super(DebugJSSEProvider.this, KEY_MANAGER_FACTORY, "debugNewSunX509",
-                    DebugNewSunX509KeyManagerFactorySpi.class.getName(), Collections.singletonList("debugPKIX"), null);
+        DebugNewSunX509KeyManagerFactoryService() {
+            super(DebugJSSEProvider.this, KEY_MANAGER_FACTORY, "NewSunX509",
+                    DebugNewSunX509KeyManagerFactorySpi.class.getName(), Collections.singletonList("PKIX"), null);
         }
     }
 
@@ -55,14 +58,14 @@ public class DebugJSSEProvider extends Provider {
     }
 
     private class DebugSunX509TrustManagerFactoryService extends Service {
-        public DebugSunX509TrustManagerFactoryService() {
-            super(DebugJSSEProvider.this, TRUST_MANAGER_FACTORY, "debugSunX509",
+        DebugSunX509TrustManagerFactoryService() {
+            super(DebugJSSEProvider.this, TRUST_MANAGER_FACTORY, "SunX509",
                     DebugSunX509TrustManagerFactorySpi.class.getName(), null, null);
         }
     }
 
     public static final class DebugSunX509TrustManagerFactorySpi extends DebugTrustManagerFactorySpi {
-        public DebugSunX509TrustManagerFactorySpi() throws NoSuchAlgorithmException {
+        public DebugSunX509TrustManagerFactorySpi() throws NoSuchAlgorithmException, NoSuchProviderException {
             super();
         }
 
@@ -73,17 +76,17 @@ public class DebugJSSEProvider extends Provider {
     }
 
     private class DebugPKIXTrustManagerFactoryService extends Service {
-        public DebugPKIXTrustManagerFactoryService() {
+        DebugPKIXTrustManagerFactoryService() {
             super(DebugJSSEProvider.this, TRUST_MANAGER_FACTORY,
-                    "debugPKIX",
+                    "PKIX",
                     DebugPKIXTrustManagerFactorySpi.class.getName(),
-                    Arrays.asList("debugSunPKIX", "debugX509", "debugX.509"),
+                    Arrays.asList("SunPKIX", "X509", "X.509"),
                     null);
         }
     }
 
     public static final class DebugPKIXTrustManagerFactorySpi extends DebugTrustManagerFactorySpi {
-        public DebugPKIXTrustManagerFactorySpi() throws NoSuchAlgorithmException {
+        public DebugPKIXTrustManagerFactorySpi() throws NoSuchAlgorithmException, NoSuchProviderException {
             super();
         }
 
@@ -93,27 +96,35 @@ public class DebugJSSEProvider extends Provider {
         }
     }
 
-
-    static Debug debug = new SystemOutDebug();
+    public static Debug debug = new SystemOutDebug();
 
     public DebugJSSEProvider() {
         super(NAME, VERSION, INFO);
 
+        // https://docs.oracle.com/javase/8/docs/technotes/guides/security/crypto/HowToImplAProvider.html#ProviderService
         // https://www.cs.mun.ca/java-api-1.5/guide/security/jce/HowToImplAJCEProvider.html#AlgAliases
         putService(new DebugSunX509KeyManagerFactoryService());
         putService(new DebugNewSunX509KeyManagerFactoryService());
         putService(new DebugSunX509TrustManagerFactoryService());
         putService(new DebugPKIXTrustManagerFactoryService());
+
+        put("SSLContext.TLSv1",
+                "com.tersesystems.debugjsse.DebugSSLContextSpi$TLS10Context");
+        put("SSLContext.TLSv1.1",
+                "com.tersesystems.debugjsse.DebugSSLContextSpi$TLS11Context");
+        put("SSLContext.TLSv1.2",
+                "com.tersesystems.debugjsse.DebugSSLContextSpi$TLS12Context");
+        put("SSLContext.TLS",
+                "com.tersesystems.debugjsse.DebugSSLContextSpi$TLSContext");
+
+        put("SSLContext.Default",
+                "com.tersesystems.debugjsse.DebugSSLContextSpi$DefaultSSLContext");
     }
 
     public static DebugJSSEProvider enable() {
-        if (enabled == false) {
-            defaultKeyManagerAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
-            defaultTrustManagerAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-
+        if (!enabled) {
             DebugJSSEProvider debugJSSEProvider = new DebugJSSEProvider();
-            Security.addProvider(debugJSSEProvider);
-            debugJSSEProvider.setAsDefault();
+            Security.insertProviderAt(debugJSSEProvider, 1); // WE ARE MOST IMPORTANTEST!!!111oneone
 
             enabled = true;
             return debugJSSEProvider;
@@ -128,32 +139,11 @@ public class DebugJSSEProvider extends Provider {
 
     public static void disable() {
         if (enabled) {
-            if (defaultKeyManagerAlgorithm.equals(Security.getProperty(SSL_KEY_MANAGER_FACTORY_SECPROP))) {
-                Security.setProperty(SSL_KEY_MANAGER_FACTORY_SECPROP, defaultKeyManagerAlgorithm);
-            }
-
-            if (defaultTrustManagerAlgorithm.equals(Security.getProperty(SSL_TRUST_MANAGER_FACTORY_SECPROP))) {
-                Security.setProperty(SSL_TRUST_MANAGER_FACTORY_SECPROP, defaultTrustManagerAlgorithm);
-            }
-
-            if (Security.getProvider(NAME) != null) {
-                Security.removeProvider(NAME);
-            }
+            Security.removeProvider(NAME);
             enabled = false;
         } else {
             throw new IllegalStateException("Provider is disabled!");
         }
-    }
-
-    // https://github.com/cloudfoundry/java-buildpack-security-provider/blob/master/src/main/java/org/cloudfoundry/security/CloudFoundryContainerProvider.java
-    public void setAsDefault() {
-        Security.setProperty(SSL_KEY_MANAGER_FACTORY_SECPROP, "debug" + defaultKeyManagerAlgorithm);
-        Security.setProperty(SSL_TRUST_MANAGER_FACTORY_SECPROP, "debug" + defaultTrustManagerAlgorithm);
-    }
-
-    public void unsetAsDefault() {
-        Security.setProperty(SSL_KEY_MANAGER_FACTORY_SECPROP, defaultKeyManagerAlgorithm);
-        Security.setProperty(SSL_TRUST_MANAGER_FACTORY_SECPROP, defaultTrustManagerAlgorithm);
     }
 
     public void setDebug(Debug newDebug) {
