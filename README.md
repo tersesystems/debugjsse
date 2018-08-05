@@ -6,6 +6,8 @@ This is a JSSE provider that provides logging for entrance and exit of the trust
 
 This works on all JSSE implementations, but is transparent, and logs before and after every call.
 
+This only works on "SunJSSE" right now.
+
 More info in the [blog post](https://tersesystems.com/blog/2018/07/27/debug-java-tls-ssl-provider/).
 
 ## Installation
@@ -26,7 +28,7 @@ Packages are hosted on jCenter:
 <dependency>
     <groupId>com.tersesystems.debugjsse</groupId>
     <artifactId>debugjsse</artifactId>
-    <version>0.3.5</version><!-- see badge for latest version -->
+    <version>0.5.0</version><!-- see badge for latest version -->
 </dependency>
 ```
 
@@ -34,7 +36,7 @@ Packages are hosted on jCenter:
 
 ```
 resolvers += Resolver.jcenterRepo 
-libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.3.5"
+libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.5.0"
 ```
 
 ## Installing Provider
@@ -43,8 +45,10 @@ The security provider must be installed before it will work.
 
 ### Installing Dynamically
 
+Calling `enable` will set the debug provider at the highest level, so it preempts "SunJSSE" and then delegates to it.
+
 ```java
-DebugJSSEProvider provider = DebugJSSEProvider.enable();)
+DebugJSSEProvider provider = DebugJSSEProvider.enable();
 ```
 
 ### Installing Statically
@@ -151,13 +155,15 @@ public class Main {
 Produces the output:
 
 ```
-2018-07-28 09:44:28,467 DEBUG [main] - enter: javax.net.ssl.TrustManagerFactory@27abe2cd.init: args = KeyStore([])
-2018-07-28 09:44:28,470 DEBUG [main] - exit:  javax.net.ssl.TrustManagerFactory@27abe2cd.init: args = KeyStore([]) => null
-2018-07-28 09:44:28,470 DEBUG [main] - enter: javax.net.ssl.TrustManagerFactory@27abe2cd.getTrustManagers()
-2018-07-28 09:44:28,471 DEBUG [main] - exit:  javax.net.ssl.TrustManagerFactory@27abe2cd.getTrustManagers() => [DebugX509ExtendedTrustManager@1151020327(sun.security.ssl.X509TrustManagerImpl@5479e3f)]
-2018-07-28 09:44:28,471 DEBUG [main] - enter: sun.security.ssl.X509TrustManagerImpl@5479e3f.getAcceptedIssuers()
-2018-07-28 09:44:28,472 DEBUG [main] - exit:  sun.security.ssl.X509TrustManagerImpl@5479e3f.getAcceptedIssuers() => []
-trustManager = []
+2018-08-05 11:47:15,108 DEBUG [main] - enter: javax.net.ssl.SSLContext@50cbc42f.init(keyManagers = null, trustManagers = null, secureRandom = null)
+2018-08-05 11:47:15,111 DEBUG [main] - enter: trustManagerFactory1-1533494835111@1265210847.init: args = null
+2018-08-05 11:47:15,184 DEBUG [main] - exit:  trustManagerFactory1-1533494835111@1265210847.init: args = null => null
+2018-08-05 11:47:15,184 DEBUG [main] - enter: trustManagerFactory1-1533494835111@1265210847.getTrustManagers()
+2018-08-05 11:47:15,185 DEBUG [main] - exit:  trustManagerFactory1-1533494835111@1265210847.getTrustManagers() => [trustManager1-1533494835185@627185331]
+2018-08-05 11:47:15,186 DEBUG [main] - exit:  javax.net.ssl.SSLContext@50cbc42f.init(keyManagers = null, trustManagers = null, secureRandom = null) => null
+2018-08-05 11:47:15,186 DEBUG [main] - enter: javax.net.ssl.SSLContext@50cbc42f.createSSLEngine()
+2018-08-05 11:47:15,190 DEBUG [main] - exit:  javax.net.ssl.SSLContext@50cbc42f.createSSLEngine() => 2a18f23c[SSLEngine[hostname=null port=-1] SSL_NULL_WITH_NULL_NULL]
+sslEngine = 2a18f23c[SSLEngine[hostname=null port=-1] SSL_NULL_WITH_NULL_NULL]
 ```
 
 ## Releasing
