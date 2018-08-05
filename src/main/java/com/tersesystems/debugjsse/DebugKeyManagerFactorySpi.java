@@ -20,7 +20,7 @@ public abstract class DebugKeyManagerFactorySpi extends KeyManagerFactorySpi {
         Object[] args = { keyStore, chars };
         debug.enter(factory, args);
         try {
-            factory = KeyManagerFactory.getInstance(getAlgorithm());
+            factory = KeyManagerFactory.getInstance(getAlgorithm(), "SunJSSE");
             factory.init(keyStore, chars);
             debug.exit(factory, null, args);
         } catch (RuntimeException e) {
@@ -35,6 +35,9 @@ public abstract class DebugKeyManagerFactorySpi extends KeyManagerFactorySpi {
         } catch (UnrecoverableKeyException e) {
             debug.exception(factory, e, args);
             throw e;
+        } catch (NoSuchProviderException e) {
+            debug.exception(factory, e, args);
+            throw new RuntimeException(e);
         }
     }
 

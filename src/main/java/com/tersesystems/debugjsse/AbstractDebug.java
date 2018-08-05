@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.Principal;
+import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -84,6 +85,40 @@ public abstract class AbstractDebug implements Debug {
     @Override
     public void exception(TrustManagerFactory factory, Exception e, Object[] args) {
         exception("exception: " + trustManagerFactoryMethod(factory, args) + " ! " + e.toString(), e);
+    }
+
+    @Override
+    public void enter(SSLContext contextSpi, String method, Object[] args) {
+        enter("enter: " + sslContextMethod(contextSpi, method, args));
+    }
+
+    @Override
+    public <T> T exit(SSLContext contextSpi, String method, T result, Object[] args) {
+        exit("exit:  " + sslContextMethod(contextSpi, method, args) + " => " + resultString(result));
+        return result;
+    }
+
+    @Override
+    public void exception(SSLContext contextSpi, String method, Exception e, Object[] args) {
+        exception("exception: " + sslContextMethod(contextSpi, method, args) + " ! " + e.toString(), e);
+    }
+
+    private String sslContextMethod(SSLContext sslContext, String method, Object[] args) {
+        if (method.equals("init")) {
+            KeyManager[] keyManagers = (KeyManager[]) args[0];
+            TrustManager[] trustManagers = (TrustManager[]) args[1];
+            SecureRandom secureRandom = (SecureRandom) args[2];
+            return String.format("%s.init(keyManagers = %s, trustManagers = %s, secureRandom = %s)", alias(sslContext),
+                    Arrays.toString(keyManagers),  Arrays.toString(trustManagers), secureRandom);
+        } else if (method.equals("createSSLEngine")) {
+            if (args == null) {
+                return String.format("%s.createSSLEngine()", alias(sslContext));
+            } else {
+                return String.format("%s.createSSLEngine(host = %s, port = %s)", alias(sslContext), args[0], args[1]);
+            }
+        } else {
+            return String.format("%s.%s()", alias(sslContext), method);
+        }
     }
 
     @Override
@@ -358,6 +393,10 @@ public abstract class AbstractDebug implements Debug {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    protected String alias(SSLContext sslContext) {
+        return sslContext.toString();
     }
 
     protected String generateAlias(X509ExtendedTrustManager delegate) {

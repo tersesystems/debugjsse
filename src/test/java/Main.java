@@ -3,12 +3,7 @@ import com.tersesystems.debugjsse.Debug;
 import com.tersesystems.debugjsse.DebugJSSEProvider;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509ExtendedTrustManager;
-import java.security.KeyStore;
-import java.security.cert.X509Certificate;
-import java.util.Arrays;
+import javax.net.ssl.*;
 
 public class Main {
 
@@ -33,16 +28,12 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         DebugJSSEProvider.enable().setDebug(slf4jDebug);
-        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(null, "changeit".toCharArray());
 
-        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init(ks);
-        TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-        X509ExtendedTrustManager trustManager = (X509ExtendedTrustManager) trustManagers[0];
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, null, null);
+        SSLEngine sslEngine = sslContext.createSSLEngine();
 
-        X509Certificate[] acceptedIssuers = trustManager.getAcceptedIssuers();
-        System.out.println("trustManager = " + Arrays.toString(acceptedIssuers));
+        System.out.println("sslEngine = " + sslEngine);
     }
 
     //
