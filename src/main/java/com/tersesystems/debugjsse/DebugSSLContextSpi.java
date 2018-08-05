@@ -38,6 +38,12 @@ public class DebugSSLContextSpi extends SSLContextSpi {
         }
     }
 
+    public static class DefaultSSLContext extends DebugSSLContextSpi {
+        public DefaultSSLContext() throws NoSuchAlgorithmException, NoSuchProviderException {
+            delegate = SSLContext.getInstance("Default", SUN_JSSE);
+        }
+    }
+
     @Override
     protected void engineInit(KeyManager[] km, TrustManager[] tm, SecureRandom sr) throws KeyManagementException {
         String method = "init";

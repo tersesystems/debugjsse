@@ -29,8 +29,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         DebugJSSEProvider.enable().setDebug(slf4jDebug);
 
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(null, null, null);
+        SSLContext sslContext = SSLContext.getDefault();
         SSLEngine sslEngine = sslContext.createSSLEngine();
 
         System.out.println("sslEngine = " + sslEngine);

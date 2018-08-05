@@ -55,9 +55,14 @@ public abstract class DebugTrustManagerFactorySpi extends TrustManagerFactorySpi
     @Override
     protected TrustManager[] engineGetTrustManagers() {
         debug.enter(factory, null);
-        TrustManager[] result = wrapTrustManagers(factory.getTrustManagers());
-        debug.exit(factory, result, null);
-        return result;
+        try {
+            TrustManager[] result = wrapTrustManagers(factory.getTrustManagers());
+            debug.exit(factory, result, null);
+            return result;
+        } catch (RuntimeException e) {
+            debug.exception(factory, e, null);
+            throw e;
+        }
     }
 
     protected TrustManager[] wrapTrustManagers(TrustManager[] originalTrustManagers)
