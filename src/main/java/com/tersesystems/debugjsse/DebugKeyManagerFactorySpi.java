@@ -18,9 +18,9 @@ public abstract class DebugKeyManagerFactorySpi extends KeyManagerFactorySpi {
 
     protected void engineInit(KeyStore keyStore, char[] chars) throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
         Object[] args = { keyStore, chars };
-        debug.enter(factory, args);
         try {
             factory = KeyManagerFactory.getInstance(getAlgorithm(), "SunJSSE");
+            debug.enter(factory, args);
             factory.init(keyStore, chars);
             debug.exit(factory, null, args);
         } catch (RuntimeException e) {
@@ -43,9 +43,9 @@ public abstract class DebugKeyManagerFactorySpi extends KeyManagerFactorySpi {
 
     protected void engineInit(ManagerFactoryParameters managerFactoryParameters) throws InvalidAlgorithmParameterException {
         Object[] args = { managerFactoryParameters };
-        debug.enter(factory, args);
         try {
-            factory = KeyManagerFactory.getInstance(getAlgorithm());
+            factory = KeyManagerFactory.getInstance(getAlgorithm(), "SunJSSE");
+            debug.enter(factory, args);
             factory.init(managerFactoryParameters);
             debug.exit(factory, null, args);
         }  catch (RuntimeException e) {
@@ -57,13 +57,21 @@ public abstract class DebugKeyManagerFactorySpi extends KeyManagerFactorySpi {
         } catch (InvalidAlgorithmParameterException e) {
             debug.exception(factory, e, args);
             throw e;
+        } catch (NoSuchProviderException e) {
+            debug.exception(factory, e, args);
+            throw new RuntimeException(e);
         }
     }
 
     protected KeyManager[] engineGetKeyManagers() {
         debug.enter(factory, null);
-        KeyManager[] result = wrapKeyManagers(factory.getKeyManagers());
-        return debug.exit(factory, result, null);
+        try {
+            KeyManager[] result = wrapKeyManagers(factory.getKeyManagers());
+            return debug.exit(factory, result, null);
+        } catch (RuntimeException e) {
+            debug.exception(factory, e, null);
+            throw e;
+        }
     }
 
     protected KeyManager[] wrapKeyManagers(KeyManager[] originalKeyManagers)
