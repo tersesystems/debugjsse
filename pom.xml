@@ -108,8 +108,29 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.0</version>
         </plugin>
+
+        <!--
+        To mirror with Maven Central, the package must be signed:
+
+        https://central.sonatype.org/pages/requirements.html#sign-files-with-gpgpgp
+
+        https://central.sonatype.org/pages/apache-maven.html#gpg-signed-components
+        -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.5</version>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
-
 </project>

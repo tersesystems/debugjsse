@@ -4,6 +4,12 @@ import com.tersesystems.debugjsse.DebugJSSEProvider;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.*;
+import java.security.KeyStore;
+import java.security.Provider;
+import java.security.Security;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.Iterator;
 
 public class Main {
 
@@ -29,7 +35,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         DebugJSSEProvider.enable().setDebug(slf4jDebug);
 
-        SSLContext sslContext = SSLContext.getDefault();
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, null, null);
         SSLEngine sslEngine = sslContext.createSSLEngine();
 
         System.out.println("sslEngine = " + sslEngine);
