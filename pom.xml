@@ -114,22 +114,12 @@
 
         https://central.sonatype.org/pages/requirements.html#sign-files-with-gpgpgp
 
-        https://central.sonatype.org/pages/apache-maven.html#gpg-signed-components
+        There's a setting in "Edit Repository" to use the bintray keys:
+
+        https://bintray.com/tersesystems/maven/edit?tab=general
+
+        "GPG sign uploaded files using Bintray's public/private key pair."
         -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-gpg-plugin</artifactId>
-          <version>1.5</version>
-          <executions>
-            <execution>
-              <id>sign-artifacts</id>
-              <phase>verify</phase>
-              <goals>
-                <goal>sign</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
       </plugins>
     </pluginManagement>
   </build>
