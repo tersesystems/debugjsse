@@ -28,7 +28,7 @@ Packages are hosted on jCenter:
 <dependency>
     <groupId>com.tersesystems.debugjsse</groupId>
     <artifactId>debugjsse</artifactId>
-    <version>0.5.0</version><!-- see badge for latest version -->
+    <version>0.5.2</version><!-- see badge for latest version -->
 </dependency>
 ```
 
