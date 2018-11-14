@@ -180,11 +180,11 @@ public abstract class AbstractDebug implements Debug {
             return String.format("%s.%s(keyTypes = %s, issuers = %s)", alias(delegate), method, keyType, Arrays.toString(issuers));
         } else if (method.equals("chooseClientAlias")) {
             //public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket)
-            String keyType = (String) args[0];
+            String[] keyTypes = (String[]) args[0];
             Principal[] issuers = (Principal[]) args[1];
             Socket socket = (Socket) args[2];
 
-            return String.format("%s.%s(keyTypes = %s, issuers = %s, socket = %s)", alias(delegate), method, keyType, Arrays.toString(issuers), socket);
+            return String.format("%s.%s(keyTypes = %s, issuers = %s, socket = %s)", alias(delegate), method, Arrays.toString(keyTypes), Arrays.toString(issuers), socket);
         } else if (method.equals("chooseServerAlias")) {
             //public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket)
             String keyType = (String) args[0];
