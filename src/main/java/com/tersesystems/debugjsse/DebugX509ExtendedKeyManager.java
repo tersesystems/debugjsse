@@ -69,7 +69,7 @@ public class DebugX509ExtendedKeyManager extends X509ExtendedKeyManager {
     @Override
     public String chooseClientAlias(String[] keyTypes, Principal[] issuers, Socket socket) {
         final String method = "chooseClientAlias";
-        final Object[] args = new Object[] { keyTypes, issuers };
+        final Object[] args = new Object[] { keyTypes, issuers, socket };
 
         debug.enter(delegate, method, args);
         try {

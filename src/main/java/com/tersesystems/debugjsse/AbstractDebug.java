@@ -1,17 +1,13 @@
 package com.tersesystems.debugjsse;
 
 import javax.net.ssl.*;
-import java.net.Socket;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.Principal;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 public abstract class AbstractDebug implements Debug {
 
@@ -181,7 +177,7 @@ public abstract class AbstractDebug implements Debug {
         for (int i = 0; i < args.length; i++) {
             sa[i] = format(args[i]);
         }
-        return String.format(alias + "." + method + "(" + template + ")", (Object[]) sa);
+        return String.format(alias + "." + method + "(" + template + ")", sa);
     }
 
     private String format(Object arg) {
@@ -191,6 +187,9 @@ public abstract class AbstractDebug implements Debug {
         }
         if (arg instanceof String) {
             return (String) arg;
+        }
+        if (arg == null) {
+            return "null";
         }
         return arg.toString();
     }
