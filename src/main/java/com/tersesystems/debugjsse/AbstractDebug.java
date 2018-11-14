@@ -171,7 +171,7 @@ public abstract class AbstractDebug implements Debug {
             String keyType = (String) args[0];
             Principal[] issuers = (Principal[]) args[1];
 
-            return String.format("%s.%s(keyTypes = %s, issuers = %s, engine = %s)", alias(delegate), method, keyType, Arrays.toString(issuers));
+            return String.format("%s.%s(keyTypes = %s, issuers = %s)", alias(delegate), method, keyType, Arrays.toString(issuers));
         } else if (method.equals("getServerAliases")) {
             //public String[] getServerAliases(String keyType, Principal[] issuers)
             String keyType = (String) args[0];
@@ -179,7 +179,7 @@ public abstract class AbstractDebug implements Debug {
 
             return String.format("%s.%s(keyTypes = %s, issuers = %s)", alias(delegate), method, keyType, Arrays.toString(issuers));
         } else if (method.equals("chooseClientAlias")) {
-            //public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket)
+            //public String chooseClientAlias(String[] keyTypes, Principal[] issuers, Socket socket)
             String[] keyTypes = (String[]) args[0];
             Principal[] issuers = (Principal[]) args[1];
             Socket socket = (Socket) args[2];
