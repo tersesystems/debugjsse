@@ -10,6 +10,8 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public abstract class AbstractDebug implements Debug {
 
@@ -109,7 +111,7 @@ public abstract class AbstractDebug implements Debug {
             TrustManager[] trustManagers = (TrustManager[]) args[1];
             SecureRandom secureRandom = (SecureRandom) args[2];
             return String.format("%s.init(keyManagers = %s, trustManagers = %s, secureRandom = %s)", alias(sslContext),
-                    Arrays.toString(keyManagers),  Arrays.toString(trustManagers), secureRandom);
+                    Arrays.toString(keyManagers), Arrays.toString(trustManagers), secureRandom);
         } else if (method.equals("createSSLEngine")) {
             if (args == null) {
                 return String.format("%s.createSSLEngine()", alias(sslContext));
@@ -151,60 +153,46 @@ public abstract class AbstractDebug implements Debug {
     }
 
     protected String keyManagerMethod(X509ExtendedKeyManager delegate, String method, Object[] args) {
-        StringBuilder sb = new StringBuilder();
-        if (method.equals("chooseEngineClientAlias")) {
-            //public String chooseEngineClientAlias(String[] keyType, Principal[] issuers, SSLEngine engine)
-            String[] keyTypes = (String[]) args[0];
-            Principal[] issuers = (Principal[]) args[1];
-            SSLEngine engine = (SSLEngine) args[2];
-
-            return String.format("%s.%s(keyTypes = %s, issuers = %s, engine = %s)", alias(delegate), method, Arrays.toString(keyTypes), Arrays.toString(issuers), engine);
-        } else if (method.equals("chooseEngineServerAlias")) {
-            //public String chooseEngineServerAlias(String keyType, Principal[] issuers, SSLEngine engine)
-            String keyType = (String) args[0];
-            Principal[] issuers = (Principal[]) args[1];
-            SSLEngine engine = (SSLEngine) args[2];
-
-            return String.format("%s.%s(keyTypes = %s, issuers = %s, engine = %s)", alias(delegate), method, keyType, Arrays.toString(issuers), engine);
-        } else if (method.equals("getClientAliases")) {
-            //public String[] getClientAliases(String keyType, Principal[] issuers)
-            String keyType = (String) args[0];
-            Principal[] issuers = (Principal[]) args[1];
-
-            return String.format("%s.%s(keyTypes = %s, issuers = %s)", alias(delegate), method, keyType, Arrays.toString(issuers));
-        } else if (method.equals("getServerAliases")) {
-            //public String[] getServerAliases(String keyType, Principal[] issuers)
-            String keyType = (String) args[0];
-            Principal[] issuers = (Principal[]) args[1];
-
-            return String.format("%s.%s(keyTypes = %s, issuers = %s)", alias(delegate), method, keyType, Arrays.toString(issuers));
-        } else if (method.equals("chooseClientAlias")) {
-            //public String chooseClientAlias(String[] keyTypes, Principal[] issuers, Socket socket)
-            String[] keyTypes = (String[]) args[0];
-            Principal[] issuers = (Principal[]) args[1];
-            Socket socket = (Socket) args[2];
-
-            return String.format("%s.%s(keyTypes = %s, issuers = %s, socket = %s)", alias(delegate), method, Arrays.toString(keyTypes), Arrays.toString(issuers), socket);
-        } else if (method.equals("chooseServerAlias")) {
-            //public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket)
-            String keyType = (String) args[0];
-            Principal[] issuers = (Principal[]) args[1];
-            Socket socket = (Socket) args[2];
-
-            return String.format("%s.%s(keyTypes = %s, issuers = %s, socket = %s)", alias(delegate), method, keyType, Arrays.toString(issuers), socket);
-        } else if (method.equals("getCertificateChain")) {
-            //public X509Certificate[] getCertificateChain(String alias)
-            String alias = (String) args[0];
-
-            return String.format("%s.%s(alias = %s)", alias(delegate), method, alias);
-        } else if (method.equals("getPrivateKey")) {
-            //public PrivateKey getPrivateKey(String alias)
-            String alias = (String) args[0];
-
-            return String.format("%s.%s(alias = %s)", delegate, method, alias);
+        final String template;
+        if ("chooseEngineClientAlias".equals(method)) {//public String chooseEngineClientAlias(String[] keyType, Principal[] issuers, SSLEngine engine)
+            template = "keyTypes = %s, issuers = %s, engine = %s";
+        } else if ("chooseEngineServerAlias".equals(method)) {//public String chooseEngineServerAlias(String keyType, Principal[] issuers, SSLEngine engine)
+            template = "keyTypes = %s, issuers = %s, engine = %s";
+        } else if ("getClientAliases".equals(method)) {//public String[] getClientAliases(String keyType, Principal[] issuers)
+            template = "keyTypes = %s, issuers = %s";
+        } else if ("getServerAliases".equals(method)) {//public String[] getServerAliases(String keyType, Principal[] issuers)
+            template = "keyTypes = %s, issuers = %s";
+        } else if ("chooseClientAlias".equals(method)) {//public String chooseClientAlias(String[] keyTypes, Principal[] issuers, Socket socket)
+            template = "keyTypes = %s, issuers = %s, socket = %s";
+        } else if ("chooseServerAlias".equals(method)) {//public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket)
+            template = "keyTypes = %s, issuers = %s, socket = %s";
+        } else if ("getCertificateChain".equals(method)) {
+            template = "alias = %s";
+        } else if ("getPrivateKey".equals(method)) {
+            template = "alias = %s";
         } else {
-            return "Unknown method " + method;
+            template = "Unknown method " + method;
         }
+        return formatArgs(template, alias(delegate), method, args);
+    }
+
+    private String formatArgs(String template, String alias, String method, Object[] args) {
+        final String[] sa = new String[args.length];
+        for (int i = 0; i < args.length; i++) {
+            sa[i] = format(args[i]);
+        }
+        return String.format(alias + "." + method + "(" + template + ")", (Object[]) sa);
+    }
+
+    private String format(Object arg) {
+        if (arg instanceof Object[]) {
+            Object[] types = (Object[]) arg;
+            return Arrays.toString(types);
+        }
+        if (arg instanceof String) {
+            return (String) arg;
+        }
+        return arg.toString();
     }
 
     protected String keyManagerFactoryMethod(KeyManagerFactory delegate, Object[] args) {
@@ -235,7 +223,7 @@ public abstract class AbstractDebug implements Debug {
             return String.format("%s.init: args = %s", alias(delegate), spec);
         }
     }
-    
+
     protected String keystoreString(KeyStore ks) {
         if (ks == null) {
             return "null";
