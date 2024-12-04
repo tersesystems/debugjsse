@@ -1,6 +1,6 @@
 package com.tersesystems.debugjsse;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.X509ExtendedKeyManager;
 import java.net.Socket;
