@@ -16,15 +16,14 @@ More info in the [blog post](https://tersesystems.com/blog/2018/07/27/debug-java
 <dependency>
     <groupId>com.tersesystems.debugjsse</groupId>
     <artifactId>debugjsse</artifactId>
-    <version>0.5.2</version><!-- see badge for latest version -->
+    <version>1.0.0</version>
 </dependency>
 ```
 
 ### sbt
 
 ```
-resolvers += Resolver.jcenterRepo 
-libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "0.5.0"
+libraryDependencies += "com.tersesystems.debugjsse" % "debugjsse" % "1.0.0"
 ```
 
 ## Installing Provider
@@ -148,15 +147,6 @@ Produces the output:
 2018-08-05 11:47:15,186 DEBUG [main] - enter: javax.net.ssl.SSLContext@50cbc42f.createSSLEngine()
 2018-08-05 11:47:15,190 DEBUG [main] - exit:  javax.net.ssl.SSLContext@50cbc42f.createSSLEngine() => 2a18f23c[SSLEngine[hostname=null port=-1] SSL_NULL_WITH_NULL_NULL]
 sslEngine = 2a18f23c[SSLEngine[hostname=null port=-1] SSL_NULL_WITH_NULL_NULL]
-```
-
-## Releasing
-
-Uses [Maven Release Plugin](http://maven.apache.org/maven-release/maven-release-plugin/plugin-info.html):
-
-```bash
-mvn release:prepare
-mvn release:perform
 ```
 
 ## Further Reading
