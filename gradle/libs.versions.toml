@@ -3,6 +3,8 @@
 
 [versions]
 junit-jupiter = "5.10.3"
+logback-classic = "1.2.13"
 
 [libraries]
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-classic" }
