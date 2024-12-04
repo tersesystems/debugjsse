@@ -80,7 +80,8 @@ extra["isReleaseVersion"] = !version.toString().endsWith("SNAPSHOT")
 
 signing { // https://docs.gradle.org/current/userguide/signing_plugin.html
     setRequired({
-        (project.extra["isReleaseVersion"] as Boolean) && gradle.taskGraph.hasTask("publish")
+        (project.extra["isReleaseVersion"] as Boolean) // && gradle.taskGraph.hasTask("publishToSonatype")
     })
+    useGpgCmd()
     sign(publishing.publications["mavenJava"])
 }
