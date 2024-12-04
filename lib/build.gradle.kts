@@ -8,6 +8,8 @@
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+    `maven-publish` // https://docs.gradle.org/current/userguide/publishing_maven.html
+    signing
 }
 
 repositories {
@@ -20,7 +22,7 @@ dependencies {
     testImplementation(libs.junit.jupiter)
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-        
+
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     testImplementation(libs.logback.classic)
 }
@@ -35,4 +37,40 @@ java {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing { //https://docs.gradle.org/current/userguide/publishing_maven.html
+    publications {
+        create<MavenPublication>("mavenJava") { //name of the publication
+            from(components["java"])
+            pom {
+                name.set("JMXBuilder")
+                description.set("JMXBuilder")
+                url.set("https://github.com/tersesystems/jmxbuilder")
+                licenses {
+                    license {
+                        name.set("Apache2")
+                        url.set("https://github.com/tersesystems/jmxbuilder/blob/main/LICENSE")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("wsargent")
+                        name.set("Will Sargent")
+                        email.set("will@tersesystems.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:https://github.com/tersesystems/jmxbuilder.git")
+                    developerConnection.set("scm:git:https://github.com/tersesystems/jmxbuilder.git")
+                    url.set("https://github.com/tersesystems/jmxbuilder.git")
+                }
+            }
+        }
+    }
 }
