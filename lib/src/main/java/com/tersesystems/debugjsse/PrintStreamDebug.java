@@ -1,9 +1,10 @@
 package com.tersesystems.debugjsse;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.TrustManagerFactory;
 import java.io.PrintStream;
 
+/**
+ * This is a class that prints to a PrintStream on debug output.
+ */
 public class PrintStreamDebug extends AbstractDebug {
 
     private final PrintStream stream;

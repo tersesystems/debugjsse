@@ -56,6 +56,12 @@ Debug sysErrDebug = new PrintStreamDebug(System.err);
 provider.setDebug(sysErrDebug);
 ```
 
+or use java.util.logging:
+
+```java
+provider.setDebug(new LoggingDebug(DEBUG, debugLogger));
+```
+
 And you can add your own logging framework by extending `AbstractDebug`:
 
 ```java

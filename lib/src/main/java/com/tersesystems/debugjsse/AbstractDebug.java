@@ -9,6 +9,11 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * This is an abstract class that provides helpful defaults for most of the Debug interface.
+ *
+ * There's three methods you have to implement, but the key/trust manager is taken care of for you.
+ */
 public abstract class AbstractDebug implements Debug {
 
     public abstract void enter(String message);
