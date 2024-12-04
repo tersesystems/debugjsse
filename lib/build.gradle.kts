@@ -74,3 +74,12 @@ publishing { //https://docs.gradle.org/current/userguide/publishing_maven.html
         }
     }
 }
+
+extra["isReleaseVersion"] = !version.toString().endsWith("SNAPSHOT")
+
+signing { // https://docs.gradle.org/current/userguide/signing_plugin.html
+    setRequired({
+        (project.extra["isReleaseVersion"] as Boolean) && gradle.taskGraph.hasTask("publish")
+    })
+    sign(publishing.publications["mavenJava"])
+}

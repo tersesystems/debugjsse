@@ -1,5 +1,7 @@
 
 plugins {
+    `maven-publish` // https://docs.gradle.org/current/userguide/publishing_maven.html
+    signing
     id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
 }
 
