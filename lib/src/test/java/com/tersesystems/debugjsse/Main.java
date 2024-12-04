@@ -1,6 +1,5 @@
-import com.tersesystems.debugjsse.AbstractDebug;
-import com.tersesystems.debugjsse.Debug;
-import com.tersesystems.debugjsse.DebugJSSEProvider;
+package com.tersesystems.debugjsse;
+
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.*;
