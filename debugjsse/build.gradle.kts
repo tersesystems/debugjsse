@@ -50,13 +50,13 @@ publishing { //https://docs.gradle.org/current/userguide/publishing_maven.html
         create<MavenPublication>("mavenJava") { //name of the publication
             from(components["java"])
             pom {
-                name.set("JMXBuilder")
-                description.set("JMXBuilder")
-                url.set("https://github.com/tersesystems/jmxbuilder")
+                name.set("debugjsse")
+                description.set("Debug JSSE Provider")
+                url.set("https://github.com/tersesystems/debugjsse")
                 licenses {
                     license {
                         name.set("Apache2")
-                        url.set("https://github.com/tersesystems/jmxbuilder/blob/main/LICENSE")
+                        url.set("https://github.com/tersesystems/debugjsse/blob/main/LICENSE")
                     }
                 }
                 developers {
@@ -67,9 +67,9 @@ publishing { //https://docs.gradle.org/current/userguide/publishing_maven.html
                     }
                 }
                 scm {
-                    connection.set("scm:git:https://github.com/tersesystems/jmxbuilder.git")
-                    developerConnection.set("scm:git:https://github.com/tersesystems/jmxbuilder.git")
-                    url.set("https://github.com/tersesystems/jmxbuilder.git")
+                    connection.set("scm:git:https://github.com/tersesystems/debugjsse.git")
+                    developerConnection.set("scm:git:https://github.com/tersesystems/debugjsse.git")
+                    url.set("https://github.com/tersesystems/debugjsse.git")
                 }
             }
         }
