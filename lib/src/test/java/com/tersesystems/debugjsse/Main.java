@@ -4,12 +4,6 @@ import com.tersesystems.debugjsse.DebugJSSEProvider;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.*;
-import java.security.KeyStore;
-import java.security.Provider;
-import java.security.Security;
-import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.Iterator;
 
 public class Main {
 
