@@ -1,31 +1,20 @@
 package com.tersesystems.debugjsse;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLContextSpi;
-import javax.net.ssl.TrustManagerFactory;
-
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Set;
 
 public class DebugJSSEProvider extends Provider {
-
-    private static String defaultKeyManagerAlgorithm;
-    private static String defaultTrustManagerAlgorithm;
 
     public final static String NAME = "debugJSSE";
     public final static Double VERSION = 1.0;
     public final static String INFO = "Debug JSSE";
 
-     private static final String SSL_KEY_MANAGER_FACTORY_SECPROP = "ssl.KeyManagerFactory.algorithm";
-     private static final String SSL_TRUST_MANAGER_FACTORY_SECPROP = "ssl.TrustManagerFactory.algorithm";
-     private static final String KEY_MANAGER_FACTORY = "KeyManagerFactory";
-     private static final String TRUST_MANAGER_FACTORY = "TrustManagerFactory";
+    private static final String KEY_MANAGER_FACTORY = "KeyManagerFactory";
+    private static final String TRUST_MANAGER_FACTORY = "TrustManagerFactory";
 
     private static boolean enabled = false;
 

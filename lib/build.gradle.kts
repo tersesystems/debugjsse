@@ -10,6 +10,7 @@ plugins {
     `java-library`
     `maven-publish` // https://docs.gradle.org/current/userguide/publishing_maven.html
     signing
+    id("com.diffplug.spotless") version "7.0.0.BETA4"
 }
 
 repositories {
